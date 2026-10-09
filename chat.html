@@ -33,7 +33,7 @@ html.embed .replay{display:none}
 .icard .big{width:96px;height:96px;border-radius:50%;overflow:hidden;box-shadow:0 6px 20px rgba(3,23,17,.10)}
 .icard .big img{width:100%;height:100%;object-fit:cover;display:block}
 .icard h2{margin-top:28px;font-size:20px;line-height:26px;font-weight:600;color:var(--g900);letter-spacing:-.2px}
-.icard p{margin-top:12px;font-size:14px;line-height:20px;color:var(--g900)}
+.icard p{margin-top:12px;font-size:14px;line-height:20px;color:#8a6772}
 .pick{position:absolute;left:16px;bottom:68px;font-size:13px;line-height:18px;font-weight:500;color:#3d4a47}
 .starters{position:absolute;left:0;right:0;bottom:76px;padding:10px 0;overflow:hidden;z-index:4;transition:opacity .3s ease,transform .3s ease}
 .starters.gone{opacity:0;transform:translateY(12px)}
@@ -95,7 +95,7 @@ html.embed .replay{display:none}
 .sum .muted{color:#3d3d3d}
 
 /* human */
-.human{display:flex;flex-direction:column;gap:12px;align-items:stretch;margin-top:24px;padding:0 4px}
+.human{display:flex;flex-direction:column;gap:12px;align-items:stretch;margin-top:56px;padding:0 4px}
 .human h3{font-size:20px;line-height:26px;font-weight:600;text-align:center;letter-spacing:-.2px}
 .hcard{position:relative;height:232px;border-radius:12px;background:var(--g500);padding:24px}
 .hcard .badge{position:absolute;right:16px;top:16px;height:25px;padding:0 12px;border-radius:32px;background:#144235;color:#b7d9cf;font-size:12px;line-height:25px;font-weight:500}
@@ -127,6 +127,10 @@ html.embed .replay{display:none}
 @keyframes blink{50%{opacity:0}}
 .mic{width:36px;height:40px;margin-top:0;display:flex;align-items:center;justify-content:center}
 .mic svg{width:22px;height:22px}
+.mic .send{display:none;width:32px;height:32px;border-radius:50%;background:#7a3550;align-items:center;justify-content:center}
+.mic.sending .send{display:flex}.mic.sending>svg{display:none}
+.mic .send svg{width:16px;height:16px}
+.typed{color:#000}
 
 /* voice */
 .voice{position:absolute;inset:0;z-index:8;background:var(--g500);opacity:0;pointer-events:none;transition:opacity .4s ease}
@@ -148,12 +152,12 @@ html.embed .replay{display:none}
 @keyframes orb{0%,100%{transform:scale(.38)}25%{transform:scale(.82)}50%{transform:scale(.55)}75%{transform:scale(1)}}
 .vtext{position:absolute;left:32px;right:32px;top:530px;text-align:center;color:#fff;font-size:20px;line-height:28px;font-weight:500;letter-spacing:-.2px;min-height:28px}
 .vtext span{animation:wd .3s ease both}@keyframes wd{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-.vtap{position:absolute;left:0;right:0;top:647px;text-align:center;color:#fff;font-size:15px;line-height:22px}
-.vbtn{position:absolute;top:720px;width:73px;height:73px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.vbtn.stop{left:48px;border:1px solid #b7d9cf}
-.vbtn.stop i{width:23px;height:23px;border-radius:4px;background:#b7d9cf}
-.vbtn.close{left:269px;background:#144235}
-.vbtn.close svg{width:22px;height:22px}
+.vtap{position:absolute;left:0;right:0;top:574px;text-align:center;color:#9fd3bf;font-size:14px;line-height:20px}
+.vbtn{position:absolute;bottom:64px;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.vbtn.stop{left:64px;border:1px solid #b7d9cf}
+.vbtn.stop i{width:18px;height:18px;border-radius:4px;background:#b7d9cf}
+.vbtn.close{right:64px;background:#144235}
+.vbtn.close svg{width:18px;height:18px}
 
 /* tap indicator */
 .tap{position:absolute;z-index:20;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(3,23,17,.18);border:2px solid rgba(255,255,255,.7);pointer-events:none;opacity:0;transform:scale(.6)}
@@ -185,7 +189,7 @@ phone.innerHTML=`
   </div></div>
 <div class="nav"><span class="back">${BACK}</span><h1>Money Bestie</h1><span class="me"><img src="${IMG.user}" alt=""></span></div>
 <div class="opts" id="opts"></div>
-<div class="input"><div class="field"><i class="caret"></i></div><span class="mic" id="mic">${S.mic}</span></div>
+<div class="input"><div class="field"><span class="typed" id="typed"></span><i class="caret"></i></div><span class="mic" id="mic">${S.mic}<span class="send"><svg viewBox="0 0 16 16" fill="none"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span></div>
 <div class="voice" id="voice">
   <div class="vav bestie"><img src="${IMG.bestie}" alt=""></div><div class="vav user"><img src="${IMG.user}" alt=""></div>
   <div class="vis" id="vis"><i></i><i></i><i></i><i></i></div>
@@ -264,7 +268,14 @@ function reset(){
   $('starters').classList.remove('gone');chat.style.transition='none';chat.style.bottom=(76+$('starters').offsetHeight)+'px';
   msgs.innerHTML=HERO;msgs.firstChild.style.height=(chat.clientHeight-28)+'px';void chat.offsetWidth;chat.style.transition='';
   const tr=$('track');tr.style.transition='none';tr.style.transform='';$('st1').classList.remove('press');
-  voice.className='voice';$('fade').classList.remove('on');
+  voice.className='voice';$('typed').textContent='';$('mic').classList.remove('sending');$('fade').classList.remove('on');
+}
+async function typeIn(text){
+  const ty=$('typed'),mic=$('mic');await sleep(900);
+  for(const ch of text){ty.textContent+=ch;await sleep(55+Math.random()*60)}
+  mic.classList.add('sending');await sleep(500);
+  tapAt(mic);await sleep(220);
+  ty.textContent='';mic.classList.remove('sending');me(text);
 }
 async function speak(){
   tapAt($('mic'));await sleep(350);
@@ -301,7 +312,7 @@ async function play(){
     await speak();
     me(`<span class="vmsg">${S.mic}Around £100 a month</span>`);await sleep(700);
     await bestie([{html:T.next}]);
-    me(await choose(['What’s an index fund?','Invest in index fund'],0));await sleep(700);
+    await typeIn('What’s an index fund?');await sleep(700);
     await bestie([{html:T.index}]);
     me(await choose(['Let’s do it','Maybe some other time'],0));await sleep(700);
     await bestie([{html:T.invest+GOAL,cls:'wide',wait:4200,after:b=>setTimeout(()=>b.querySelector('.goal').classList.add('run'),200)}],{typing:1200});
