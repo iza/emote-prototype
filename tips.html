@@ -23,10 +23,11 @@ html.embed .restart{display:none}
 button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer}
 button:focus,button:focus-visible{outline:none}
 
-.screen{position:absolute;inset:0 0 78px 0;background:#fff;display:flex;flex-direction:column;transition:transform .45s cubic-bezier(.3,.7,.2,1),opacity .3s;z-index:1}
+.screen{position:absolute;inset:76px 0 78px 0;background:#fff;display:flex;flex-direction:column;transition:transform .45s cubic-bezier(.3,.7,.2,1),opacity .3s;z-index:1}
 .screen.off-right{transform:translateX(100%)}
 .screen.off-left{transform:translateX(-28%);opacity:.6}
 .screen.hidden{visibility:hidden}
+.top.fixed{position:absolute;left:0;right:0;top:0;z-index:6}
 .top{height:76px;flex-shrink:0;padding:28px 16px 0;display:flex;align-items:center;justify-content:space-between;background:#fff}
 .top .back{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:500;color:#5c3a46;width:72px}
 .top .back svg{width:8px;height:14px}
@@ -140,16 +141,15 @@ const TIPS=[
 const phone=$('#phone');
 phone.innerHTML=`
 <section class="screen" id="grid">
- <div class="top"><span class="back">${BACK}Back</span><h1>Money Bestie</h1><span class="me"><img src="${IMG.user}" alt=""></span></div>
  <div class="scroll" id="gscroll">
   <div class="gh"><p class="eb">Learn · 6 topics</p><h2>Bestie’s Top Tips</h2><p class="s">Your go-to guide for smart, savvy financial moves.</p></div>
   <div class="grid">${TIPS.map((t,i)=>`<button class="card" data-i="${i}" style="background:${t.bg};color:${t.fg}"><p class="q">${t.q}</p><img src="${PIC[i]}" alt=""><span class="n">${t.pages.length} tips</span></button>`).join('')}</div>
  </div>
 </section>
 <section class="screen off-right hidden" id="tipscr">
- <div class="top"><button class="back" id="back">${BACK}Back</button><h1>Money Bestie</h1><span class="me"><img src="${IMG.user}" alt=""></span></div>
  <div class="tipwrap"><div class="tip" id="tip"></div></div>
 </section>
+<div class="top fixed"><button class="back" id="back">${BACK}Back</button><h1>Money Bestie</h1><span class="me"><img src="${IMG.user}" alt=""></span></div>
 <nav class="nav"><span class="it">${NAV.home}Home</span><span class="it">${TRACK_OUT}Track</span><span class="it chat">${NAV.chat}</span><span class="it on learn">${NAV.learn}Learn</span><span class="it">${NAV.play}Play</span></nav>
 <div class="toast" id="toast"></div>
 <div class="tap" id="tap"></div>`;
@@ -185,7 +185,7 @@ function tapAt(el){const p=phone.getBoundingClientRect(),r=el.getBoundingClientR
 phone.addEventListener('click',e=>{
  const t=e.target;
  const c=t.closest('.card');if(c){openTip(+c.dataset.i);return}
- if(t.closest('#back')){closeTip();return}
+ if(t.closest('#back')){if(cur!==null)closeTip();return}
  if(t.closest('#next')){go(1);return}
  const z=t.closest('.zone');if(z){go(+z.dataset.z);return}
 });
