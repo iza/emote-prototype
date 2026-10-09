@@ -24,11 +24,15 @@ button:focus,button:focus-visible{outline:none}
 button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* screens */
-.screen{position:absolute;inset:0 0 78px 0;background:#fff;display:flex;flex-direction:column;transition:transform .42s cubic-bezier(.3,.7,.2,1),opacity .3s ease;z-index:1}
+.screen{position:absolute;inset:76px 0 78px 0;background:#fff;display:flex;flex-direction:column;transition:transform .42s cubic-bezier(.3,.7,.2,1),opacity .3s ease;z-index:1}
 .screen.off-right{transform:translateX(100%)}
 .screen.off-left{transform:translateX(-28%);opacity:.6}
 .screen.hidden{visibility:hidden}
-.top{height:76px;flex-shrink:0;padding:28px 16px 0;display:flex;align-items:center;justify-content:space-between;background:#fff;z-index:2}
+.top{position:absolute;left:0;right:0;top:0;height:76px;padding:28px 16px 0;display:flex;align-items:center;justify-content:space-between;background:#fff;z-index:6;transition:background .35s}
+.top.onbg{background:#f4f5f4}
+.top .back,.top h1{transition:opacity .25s}
+.top.onbg .back,.top.onbg h1{opacity:0;pointer-events:none}
+.top h1.swap{opacity:0}
 .top .back{width:32px;height:32px;display:flex;align-items:center}
 .top .back svg{width:9px;height:15px}
 .top h1{font-size:15px;line-height:20px;font-weight:500;letter-spacing:-.2px}
@@ -185,7 +189,6 @@ button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer
 
 /* connect */
 .onb{background:#f4f5f4}
-.onb .top{background:#f4f5f4;justify-content:flex-end}
 .onbody{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px 40px;text-align:center}
 .onbody img{display:block}
 .onbody h2{margin-top:24px;font-size:24px;line-height:30px;font-weight:700;letter-spacing:-.7px}
@@ -243,14 +246,13 @@ const START={savings:7,investments:3,pension:5,property:1};
 
 const phone=$('#phone');
 phone.innerHTML=`
-<section class="screen onb" id="connect"><div class="top"><span class="me"><img src="${IMG.user}" alt=""></span></div>
+<section class="screen onb" id="connect">
  <div class="onbody" id="cbody"><img src="${IMG.link}" width="166" height="166" alt=""><h2>Link your bank account<br>to start tracking finances</h2><p class="s">We will connect it securely.<br>We don’t store your bank details.</p><button class="cta" id="connectBtn">Connect my account</button><span class="lnk">I need some more info on security</span><div class="found" id="found"></div></div>
 </section>
-<section class="screen onb off-right hidden" id="okscr"><div class="top"><span class="me"><img src="${IMG.user}" alt=""></span></div>
+<section class="screen onb off-right hidden" id="okscr">
  <div class="onbody"><img class="okimg" src="${IMG.ok}" width="144" height="173" alt=""><h2>You’re all good!</h2><p class="s">4 accounts connected. Ready to start<br>tracking your finances?</p><button class="cta" id="letsGo">Let’s go!</button></div>
 </section>
 <section class="screen off-right hidden" id="home">
- <div class="top"><span class="back">${BACK}</span><h1>Your Financial Wellness</h1><span class="me"><img src="${IMG.user}" alt=""></span></div>
  <div class="scroll" id="homeScroll">
   <div class="hero"><div><p class="eb">Net worth</p><p class="bal"><span>£</span><b id="nw">75,000</b></p><p class="delta">▲ £1,240 <em>this month</em></p></div><button class="pbtn" id="toProj">Projection</button></div>
   <div class="forest" id="forest"></div>
@@ -262,9 +264,8 @@ phone.innerHTML=`
   <div class="accs" id="accs"></div>
  </div>
 </section>
-<section class="screen off-right hidden" id="acc"><div class="top"><button class="back" data-back>${BACK}</button><h1>Your Financial Wellness</h1><span class="me"><img src="${IMG.user}" alt=""></span></div><div class="scroll" id="accScroll"></div></section>
+<section class="screen off-right hidden" id="acc"><div class="scroll" id="accScroll"></div></section>
 <section class="screen off-right hidden proj" id="proj">
- <div class="top"><button class="back" data-back>${BACK}</button><h1>Future You</h1><span class="me"><img src="${IMG.user}" alt=""></span></div>
  <div class="scroll" id="projScroll">
   <div class="form">
    <div class="ph"><p class="eb">Projection</p><h2>Future You</h2><p>Hey Joanna! 👋 Let’s see where your money could take you over the next 33 years.</p></div>
@@ -281,6 +282,7 @@ phone.innerHTML=`
   </div>
  </div>
 </section>
+<div class="top onbg" id="topbar"><button class="back" data-back id="topBack">${BACK}</button><h1 id="topTitle">Your Financial Wellness</h1><span class="me"><img src="${IMG.user}" alt=""></span></div>
 <nav class="nav"><span class="it">${NAV.home}Home</span><span class="it on">${NAV.track}Track</span><span class="it chat">${NAV.chat}</span><span class="it">${NAV.learn}Learn</span><span class="it">${NAV.play}Play</span></nav>
 <div class="dim" id="dim"></div>
 <div class="sheet gs" id="goalSheet"><button class="x" data-close>${XI}</button>
@@ -336,13 +338,15 @@ function buildHome(){
 
 /* ---------- navigation ---------- */
 let stack=['home'];
-function show(id){
+const TITLES={home:'Your Financial Wellness',acc:'Your Financial Wellness',proj:'Future You'};
+function setTop(id){const tb=$('#topbar');tb.classList.toggle('onbg',id==='connect'||id==='okscr');const h=$('#topTitle'),nt=TITLES[id]||h.textContent;if(h.textContent!==nt){h.classList.add('swap');setTimeout(()=>{h.textContent=nt;h.classList.remove('swap')},200)}}
+function show(id){setTop(id);
  const cur=$('#'+stack[stack.length-1]),nx=$('#'+id);
  nx.classList.remove('hidden');void nx.offsetWidth;nx.classList.remove('off-right');cur.classList.add('off-left');
  stack.push(id);setTimeout(()=>cur.classList.add('hidden'),450);
 }
 function back(){
- if(stack.length<2)return;const cur=$('#'+stack.pop()),pv=$('#'+stack[stack.length-1]);
+ if(stack.length<2)return;const cur=$('#'+stack.pop()),pv=$('#'+stack[stack.length-1]);setTop(stack[stack.length-1]);
  pv.classList.remove('hidden');void pv.offsetWidth;pv.classList.remove('off-left');cur.classList.add('off-right');
  setTimeout(()=>cur.classList.add('hidden'),450);updateHint();
 }
@@ -430,8 +434,8 @@ function hintTarget(){
  if($('#tipSheet').classList.contains('on'))return $('#tipSheet .cta');
  if(top==='connect')return $('#connectBtn');if(top==='okscr')return $('#letsGo');
  if(top==='home'){if(!S.goal.investments)return $('[data-add="investments"]');if(!S.seenAcc)return $('[data-amt="savings"]');if(!S.seenProj)return $('#toProj');return null}
- if(top==='acc')return $('#acc [data-back]');
- if(top==='proj'){if(!$('#proj').classList.contains('done'))return $('#calc');return $('#proj [data-back]')}
+ if(top==='acc')return $('#topBack');
+ if(top==='proj'){if(!$('#proj').classList.contains('done'))return $('#calc');return $('#topBack')}
  return null;
 }
 function updateHint(){return;document.querySelectorAll('.hint').forEach(e=>e.classList.remove('hint'));const t=hintTarget();if(t)t.classList.add('hint')}
@@ -461,7 +465,7 @@ function reset(){
  RUN++;demoOn=false;
  S={stage:{...START},goal:{investments:false,pension:false,property:false},seenAcc:false,seenProj:false};
  ACC.investments.when='';ACC.investments.target=20000;
- stack=['connect'];['acc','proj','home'].forEach(id=>{const s=$('#'+id);s.className='screen off-right hidden'+(id==='proj'?' proj':'')});
+ stack=['connect'];setTop('connect');['acc','proj','home'].forEach(id=>{const s=$('#'+id);s.className='screen off-right hidden'+(id==='proj'?' proj':'')});
  $('#okscr').className='screen onb off-right hidden';$('#connect').className='screen onb';connecting=false;
  $('#connectBtn').innerHTML='Connect my account';$('#cbody').classList.remove('busy');$('#found').innerHTML='';
  closeSheets();$('#homeScroll').scrollTop=0;$('#nw').textContent='0';$('#mainBar').style.width='0';
@@ -498,13 +502,13 @@ async function demo(){
   await dtap('.col[data-k="savings"] .tree');await dsleep(2600);
   $('#accScroll').scrollTo({top:330,behavior:'smooth'});await dsleep(1800);
   $('#accScroll').scrollTo({top:0,behavior:'smooth'});await dsleep(900);
-  await dtap('#acc [data-back]');await dsleep(1200);
+  await dtap('#topBack');await dsleep(1200);
   await dtap('#toProj');await dsleep(1700);
   await dtap('#qm');await dsleep(2200);await dtap('#tipSheet .cta');await dsleep(800);
   await dtap('#calc');await dsleep(4200);
   $('#projScroll').scrollTo({top:380,behavior:'smooth'});await dsleep(2600);
   $('#projScroll').scrollTo({top:0,behavior:'smooth'});await dsleep(1200);
-  await dtap('#proj [data-back]');await dsleep(2500);
+  await dtap('#topBack');await dsleep(2500);
   demo();
  }catch(e){}
 }
