@@ -52,7 +52,7 @@ button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer
 .pbtn:active{background:var(--soft)}
 .forest{margin:40px 6px 0;display:grid;grid-template-columns:repeat(4,1fr);align-items:end;height:172px}
 .col{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;cursor:pointer}
-.tree{position:absolute;bottom:0;left:50%;margin-left:-42px;width:84px;height:252px;transform-origin:50% 100%}
+.tree{pointer-events:none;position:absolute;bottom:0;left:50%;margin-left:-42px;width:84px;height:252px;transform-origin:50% 100%}
 .tree .layer{position:absolute;inset:0}
 .tree img{position:absolute;left:0;bottom:0;width:84px;height:252px;opacity:0;transform-origin:50% 100%;transition:opacity .7s ease,transform .9s cubic-bezier(.2,.8,.25,1)}
 .tree img.on{opacity:1}
