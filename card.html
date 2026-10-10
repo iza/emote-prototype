@@ -52,7 +52,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .seg button{flex:1;height:26px;border-radius:6px;font-size:12px;color:#5c6870;font-weight:500}
 .seg button.on{background:#fff;color:#2e3438;box-shadow:0 1px 2px rgba(0,0,0,.08)}
 .ppl{display:flex;gap:8px}.ppl button{width:34px;height:34px;border-radius:50%;overflow:hidden;outline:2px solid transparent;outline-offset:2px;transition:outline-color .15s}
-.ppl button.on{outline-color:#262626}.ppl img{width:100%;height:100%;object-fit:cover;display:block}
+.ppl button.on{outline-color:#262626}.ppl img{width:100%;height:118%;object-fit:cover;object-position:top;display:block}
 
 /* canvas */
 .canvas{flex:1;position:relative;overflow:hidden;background:var(--bg)}
@@ -68,12 +68,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .card{width:360px;height:682px;border-radius:16px;overflow:hidden;background:#fff;color:#262626;display:flex;flex-direction:column;font-family:P,sans-serif;position:relative;
  box-shadow:0 1px 3px rgba(60,45,30,.10),0 14px 34px rgba(60,45,30,.10);transition:box-shadow .3s,transform .3s}
 .card.hover{transform:translateY(-6px);box-shadow:0 2px 6px rgba(60,45,30,.12),0 28px 56px rgba(60,45,30,.18)}
-.card .ph{height:360px;flex:none;overflow:hidden;position:relative}.card .ph img{display:block;width:360px;height:360px;object-fit:cover;transition:transform .5s}
+.card .ph{height:360px;flex:none;overflow:hidden;position:relative}.card .ph img{display:block;width:398px;height:398px;max-width:none;margin-left:-19px;object-fit:cover;transition:transform .5s;transform-origin:50% 40%}
 .card.hover .ph img{transform:scale(1.03)}
 .card .tw{margin-top:-31px;padding:0 12px;display:flex;flex-direction:column;gap:6px;position:relative}
-.card .tg{border-radius:12px;padding:8px 12px;font-size:14px;line-height:24px;font-weight:500;transition:background .35s}
+.card .tg{border-radius:12px;padding:8px 12px;font-size:14px;line-height:24px;font-weight:500}
 .card .pl{display:flex;gap:6px}
-.card .ap{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:8px;font-size:12px;line-height:20px;transition:background .35s}
+.card .ap{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:8px;font-size:12px;line-height:20px}
 .card .ib{display:inline-flex;align-items:center;height:28px;padding:0 8px;border-radius:8px;background:#f6f5f4;font-size:12px;line-height:20px}
 .card svg{width:16px;height:16px;flex:none}
 .card .bd{padding:16px 24px 0;display:flex;flex-direction:column}
@@ -95,7 +95,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .card.loading [data-p]::after,.card.loading .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);transform:translateX(-100%);animation:shim 1.3s infinite}
 @keyframes shim{to{transform:translateX(100%)}}
 /* build */
-.card [data-p]{transition:opacity .45s ease,transform .5s cubic-bezier(.2,.8,.2,1),background .35s}
+.card.anim [data-p]{transition:opacity .45s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
+
 .card.build [data-p]{opacity:0;transform:translateY(10px)}
 .card.build [data-p].in{opacity:1;transform:none}
 
@@ -229,7 +230,7 @@ function drawOverlay(){ov.innerHTML='';const hl=document.createElement('div');hl
  const ps=partsPresent();const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','lines');ov.appendChild(svg);
  let lastY=-99;const X=420;
  const Y0=120,Y1=650,step=(Y1-Y0)/Math.max(1,ps.length-1);ps.forEach((p,i)=>{const el=card.querySelector(`[data-p="${p[0]}"]`);const r=rel(el);const ty=Y0+i*step;
-  const sx=p[0]==='photo'?300:Math.min(r.x+r.w,352),sy=p[0]==='photo'?150:r.y+Math.min(r.h,48)/2;
+  const sx=360,sy=p[0]==='photo'?150:r.y+Math.min(r.h,48)/2;
   const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d',`M${sx} ${sy} L${X-60} ${sy} L${X-30} ${ty} L${X-12} ${ty}`);path.dataset.k=p[0];svg.appendChild(path);
   const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');dot.setAttribute('cx',sx);dot.setAttribute('cy',sy);dot.setAttribute('r',2.5);dot.dataset.k=p[0];svg.appendChild(dot);
   const m=document.createElement('div');m.className='mk';m.textContent=PARTS.indexOf(p)+1;m.style.left=X+'px';m.style.top=ty+'px';m.dataset.k=p[0];ov.appendChild(m);
@@ -270,8 +271,7 @@ function render(){card.innerHTML=cardHTML();card.className='card'+(C.state==='ho
 /* controls */
 $('#apps').innerHTML=Object.entries(APP).map(([k,a])=>`<button class="apb ${k===C.approach?'on':''}" data-a="${k}" style="background:linear-gradient(135deg,${a[3]} 50%,${a[4]} 50%)" aria-label="${a[1]}" title="${a[1]}"></button>`).join('');
 $$('.apb').forEach(b=>b.onclick=()=>{C.approach=b.dataset.a;$$('.apb').forEach(x=>x.classList.toggle('on',x===b));
- const a=APP[C.approach];card.querySelector('.tg').style.background=a[3];const ap=card.querySelector('.ap');ap.style.background=a[4];ap.firstChild.textContent=a[0];$('#apname').innerHTML=`<b>${a[0]}</b> · ${a[2]}-500 / ${a[2]}-200`;
- requestAnimationFrame(()=>{drawOverlay();inspect(cur||'tag')});});
+ const keep=cur;render();requestAnimationFrame(()=>inspect(keep||'tag'));});
 $$('.tog').forEach(t=>t.onclick=()=>{const k=t.dataset.k;C[k]=!C[k];t.classList.toggle('on',C[k]);render();setTimeout(()=>inspect({introCall:'intro',verified:'name',messaging:'name',concessions:'price'}[k]==='intro'&&!C.introCall?'approach':{introCall:'intro',verified:'name',messaging:'name',concessions:'price'}[k]),30)});
 $$('#state button').forEach(b=>b.onclick=()=>{C.state=b.dataset.s;$$('#state button').forEach(x=>x.classList.toggle('on',x===b));card.className='card'+(C.state==='hover'?' hover':'')+(C.state==='loading'?' loading':'');panel()});
 $('#ppl').innerHTML=PEOPLE.map((P,i)=>`<button class="${i===C.who?'on':''}" data-i="${i}" aria-label="${P.n}"><img src="data:image/jpeg;base64,${PH[P.p]}" alt=""></button>`).join('');
@@ -281,10 +281,10 @@ $('#gridb').onclick=()=>{$('#canvas').classList.toggle('grid');$('#gridb').class
 /* build: parts arrive in anatomy order, each with its callout */
 let building=false;
 async function build(){if(building)return;building=true;const prev=C.state;C.state='default';$$('#state button').forEach(x=>x.classList.toggle('on',x.dataset.s==='default'));render();await sleep(40);
- card.classList.add('build');$$('.mk,.mkl,svg.lines path,svg.lines circle').forEach(e=>e.style.opacity=0);await sleep(250);
+ card.classList.add('anim','build');$$('.mk,.mkl,svg.lines path,svg.lines circle').forEach(e=>e.style.opacity=0);await sleep(250);
  for(const p of partsPresent()){const el=card.querySelector(`[data-p="${p[0]}"]`);el.classList.add('in');
   $$('.mk,.mkl,svg.lines path,svg.lines circle').forEach(e=>{if(e.dataset.k===p[0])e.style.opacity=1});inspect(p[0]);await sleep(p[0]==='photo'?520:380)}
- await sleep(400);card.classList.remove('build');card.querySelectorAll('.in').forEach(e=>e.classList.remove('in'));$$('.mk,.mkl,svg.lines path,svg.lines circle').forEach(e=>e.style.opacity='');inspect(null);building=false}
+ await sleep(400);card.classList.remove('build');setTimeout(()=>card.classList.remove('anim'),700);card.querySelectorAll('.in').forEach(e=>e.classList.remove('in'));$$('.mk,.mkl,svg.lines path,svg.lines circle').forEach(e=>e.style.opacity='');inspect(null);building=false}
 $('#replay').onclick=build;
 render();inspect(null);
 /* play the build once, when the card first comes into view */
