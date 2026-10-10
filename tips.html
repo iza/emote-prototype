@@ -199,7 +199,7 @@ const dsleep=ms=>new Promise((res,rej)=>{const r=RUN;setTimeout(()=>r===RUN&&dem
 async function dtap(sel){const el=typeof sel==='string'?$(sel):sel;if(!el)return;tapAt(el);await dsleep(450);el.click()}
 const readT=()=>{const p=TIPS[cur].pages[page];return 2600+(p[0].length+p[1].length)*30};
 async function readTip(i,max){
- const c=$(`.card[data-i="${i}"]`);c.scrollIntoView({block:'nearest',behavior:'smooth'});await dsleep(900);
+ const c=$(`.card[data-i="${i}"]`),sc=$('#gscroll');{const top=c.offsetTop,bot=top+c.offsetHeight;if(top<sc.scrollTop)sc.scrollTo({top:top-16,behavior:'smooth'});else if(bot>sc.scrollTop+sc.clientHeight)sc.scrollTo({top:bot-sc.clientHeight+16,behavior:'smooth'});}await dsleep(900);
  await dtap(c);await dsleep(900+readT());
  const n=Math.min(max||99,TIPS[i].pages.length);
  for(let j=1;j<n;j++){await dtap('#next');await dsleep(500+readT())}
