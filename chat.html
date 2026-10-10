@@ -12,7 +12,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{background:var(--page);font-family:Inter,system-ui,sans-serif;color:#000;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;gap:12px}
-.phone{position:relative;width:390px;height:min(844px,100dvh);overflow:hidden;border-radius:28px;box-shadow:0 20px 60px rgba(23,23,23,.12),0 0 0 1px rgba(23,23,23,.06);background:#fff;user-select:none}
+.phone{position:relative;width:390px;height:min(844px,100dvh);overflow:hidden;border-radius:28px;box-shadow:0 20px 60px rgba(23,23,23,.12),0 0 0 1px rgba(23,23,23,.06);background:#fff;user-select:none;background:var(--bg)}
 .replay{font-size:12px;line-height:20px;color:#525252;text-decoration:underline;text-underline-offset:3px;background:none;border:0;cursor:pointer;font-family:inherit}
 @media (max-width:430px),(max-height:700px){body{gap:0}.phone{width:100vw;height:100dvh;border-radius:0;box-shadow:none}.replay{display:none}}
 html.embed,html.embed body{background:transparent}
@@ -21,7 +21,7 @@ html.embed .phone{height:800px;margin:4px 0 40px;border-radius:32px;box-shadow:0
 html.embed .replay{display:none}
 
 /* header */
-.nav{position:absolute;left:0;right:0;top:0;height:76px;background:#fff;z-index:6;display:flex;align-items:center;justify-content:space-between;padding:28px 16px 0;border-bottom:1px solid rgba(0,0,0,.05)}
+.nav{position:absolute;left:0;right:0;top:0;height:76px;background:transparent;z-index:6;display:flex;align-items:center;justify-content:space-between;padding:28px 16px 0}
 .nav .back{width:32px;height:32px;display:flex;align-items:center}
 .nav .back svg{width:8px;height:14px}
 .nav h1{font-size:14px;line-height:20px;font-weight:600;letter-spacing:-.15px;color:#5c3a46}
@@ -42,7 +42,7 @@ html.embed .replay{display:none}
 .starter.press{transform:scale(.97);filter:brightness(.95)}
 
 /* chat */
-.chat{position:absolute;left:0;right:0;top:76px;bottom:76px;background:var(--bg);overflow:hidden;z-index:1;transition:bottom .35s ease}
+.chat{position:absolute;left:0;right:0;top:76px;bottom:76px;background:transparent;overflow:hidden;z-index:1;transition:bottom .35s ease}
 .msgs{position:absolute;left:0;right:0;bottom:0;padding:16px 12px 12px;display:flex;flex-direction:column;gap:12px;transition:transform .45s cubic-bezier(.3,.7,.2,1)}
 .row{display:flex;gap:8px;align-items:flex-end}
 .row.me{justify-content:flex-end}

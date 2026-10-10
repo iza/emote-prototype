@@ -113,40 +113,38 @@ function spot(c,others,edge){                               // a fairly open spo
   return best;
 }
 const START=[[220,690,-1.6],[2259,740,2],[575,859,0],[1683,832,0],[1162,641,2.4]];   // positions from the Figma cover
-cards.forEach((c,i)=>{c.x=START[i][0];c.y=START[i][1];c.r=START[i][2]});
+cards.forEach((c,i)=>{c.x=START[i][0];c.y=START[i][1];c.r=START[i][2];c.slot=i});
 function place(c){c.el.style.transform=`translate(${c.x}px,${c.y}px) rotate(${c.r}deg) scale(${c.s})`}
 cards.forEach(place);
 const easeIO=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
-const clampP=p=>({...p,x:Math.min(BX[1]+60,Math.max(BX[0]-60,p.x)),y:Math.min(BY[1]+40,Math.max(BY[0]-40,p.y))});
 function onTop(c){return !cards.some(o=>o!==c&&+o.el.style.zIndex>+c.el.style.zIndex&&Math.abs(o.x-c.x)<CW*.95&&Math.abs(o.y-c.y)<CH*.95)}
-let lastC=null;
-let turn=0;
+const at=i=>({x:START[i][0]+R(-14,14),y:START[i][1]+R(-14,14),r:START[i][2]+R(-1.5,1.5)});
+let lastC=null,turn=0;
+/* a card is picked up, looked at, and put down in another card's place; that card slides over into the gap it left */
 function pick(now){
-  const free=cards.filter(c=>!c.path&&c!==lastC&&onTop(c));if(!free.length)return;
-  const think=(turn++%3)!==2;                          // two out of three moves: bring a card to the middle to look at it
-  const c=think?free.sort((a,b)=>Math.abs(b.x-W/2)-Math.abs(a.x-W/2))[Math.floor(rnd()*Math.min(2,free.length))]
-               :free[Math.floor(rnd()*free.length)];
-  lastC=c;
-  const k0={x:c.x,y:c.y,r:c.r,s:SC};
-  const lift={x:c.x+R(-14,14),y:c.y-R(10,22),r:c.r+R(-2,2),s:SC*1.05,d:480};
-  let frames;
-  if(think){                                         // picked up from the edge, brought to the centre on top of the others,
-    const cx=W/2+R(-70,70),cy=H/2+R(-30,20),cr=R(-2.5,2.5);   // held for a moment, then put back out on the table
-    const to=spot(c,cards.filter(o=>o!==c),true),rt=R(-5,5);
-    frames=[lift,
-      {x:cx,y:cy,r:cr,s:SC*1.13,d:R(1900,2300)},
-      {x:cx+R(-18,18),y:cy+R(-12,8),r:cr+R(-1.8,1.8),s:SC*1.14,d:R(1400,2000)},
-      {x:cx+R(-14,14),y:cy+R(-8,10),r:cr+R(-1.5,1.5),s:SC*1.13,d:R(1100,1600)},
-      {...to,r:rt,s:SC*1.03,d:R(1900,2400)},{...to,r:rt,s:SC,d:400}];
-  }else if(rnd()<.6){                                // slides it across the table in one easy move
-    const to=spot(c,cards.filter(o=>o!==c)),rt=R(-5,5);
-    frames=[lift,{...to,r:rt,s:SC*1.03,d:R(2000,2600)},{...to,r:rt,s:SC,d:380}];
-  }else{                                             // a small nudge: just shifts and turns it a little
-    const p=clampP({x:c.x+R(-180,180),y:c.y+R(-60,60)}),r2=Math.max(-5,Math.min(5,c.r+R(-4,4)));
-    frames=[{...lift,s:SC*1.02,d:350},{...p,r:r2,s:SC*1.02,d:R(1300,1700)},{...p,r:r2,s:SC,d:350}];
+  const free=cards.filter(c=>!c.path&&c!==lastC&&onTop(c));if(free.length<2)return;
+  const edge=free.sort((a,b)=>Math.abs(b.x-W/2)-Math.abs(a.x-W/2));
+  const A=edge[Math.floor(rnd()*Math.min(2,edge.length))];lastC=A;
+  const others=free.filter(o=>o!==A).sort((p,q)=>Math.abs(p.x-A.x)-Math.abs(q.x-A.x));
+  const B=others[Math.floor(rnd()*Math.min(2,others.length))];
+  const sa=A.slot,sb=B.slot,toB=at(sb),toA=at(sa);
+  const lift=(c,d)=>({x:c.x+R(-12,12),y:c.y-R(10,20),r:c.r+R(-2,2),s:SC*1.04,d});
+  const think=(turn++%4)!==3;
+  let fa,startB;
+  if(think){
+    const cx=W/2+R(-80,80),cy=H/2+R(-30,20),cr=R(-2.5,2.5),t1=R(1900,2300),t2=R(1400,1900),t3=R(1000,1400);
+    fa=[lift(A,480),{x:cx,y:cy,r:cr,s:SC*1.13,d:t1},{x:cx+R(-18,18),y:cy+R(-12,8),r:cr+R(-1.8,1.8),s:SC*1.14,d:t2},
+        {x:cx+R(-14,14),y:cy+R(-8,10),r:cr+R(-1.5,1.5),s:SC*1.13,d:t3},{...toB,s:SC*1.03,d:R(1800,2200)},{...toB,s:SC,d:400}];
+    startB=480+t1+300;                                 // while the card is being looked at, the neighbour fills its gap
+  }else{
+    fa=[lift(A,420),{...toB,s:SC*1.04,d:R(2100,2600)},{...toB,s:SC,d:380}];startB=900;
   }
-  c.el.style.zIndex=++z;c.el.classList.add('lift');    // it is the top card, so nothing visibly jumps
-  c.path={t0:now,from:k0,frames,i:0};
+  const fb=[lift(B,420),{...toA,s:SC*1.03,d:R(1700,2100)},{...toA,s:SC,d:380}];
+  B.el.style.zIndex=++z;A.el.style.zIndex=++z;        // both are top cards, so nothing visibly jumps
+  A.el.classList.add('lift');B.el.classList.add('lift');
+  A.path={t0:now,from:{x:A.x,y:A.y,r:A.r,s:SC},frames:fa,i:0};
+  B.path={t0:now+startB,from:{x:B.x,y:B.y,r:B.r,s:SC},frames:fb,i:0};
+  A.slot=sb;B.slot=sa;
 }
 function step(c,now){
   const p=c.path;let f=p.frames[p.i],t=(now-p.t0)/f.d;
@@ -162,7 +160,7 @@ function tick(now){
   fit();
   if(!document.hidden){
     for(const c of cards)if(c.path){step(c,now);place(c)}
-    if(now>nextPick&&!cards.some(c=>c.path)){pick(now);nextPick=now+R(900,2200)}
+    if(now>nextPick&&!cards.some(c=>c.path)){pick(now);nextPick=now+R(1400,2800)}
   }else{last=now}
   requestAnimationFrame(tick);
 }
