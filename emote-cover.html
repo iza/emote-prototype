@@ -92,44 +92,53 @@ const R=(a,b)=>a+rnd()*(b-a);
 const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
 
 /* ---- cards spread loosely on a table; one at a time is picked up, considered and put down somewhere else ---- */
-const SC=0.94,CW=360*SC,CH=682*SC;
-const BX=[CW*.5+20,W-CW*.5-20],BY=[CH*.5+40,H-CH*.5-40];
-const SHOW=[0,1,2,3,5,6,7,8].map(i=>DATA[i]);        // 8 cards: 2 of each colour, 3 men
+const SC=1.22,CW=360*SC,CH=682*SC;
+const BX=[CW*.5-10,W-CW*.5+10],BY=[CH*.5+10,H-CH*.5-10];
+const SHOW=[0,1,2,3,5,8].map(i=>DATA[i]);            // 6 bigger cards: 3 men, 3 women
 const cards=SHOW.map(dd=>{const d=document.createElement('div');d.className='card';d.innerHTML=cardHTML(dd);stage.appendChild(d);
   return {col:AP[dd.a][1],el:d,x:-9999,y:-9999,r:0,s:SC,path:null}});
 let z=0;cards.forEach(c=>c.el.style.zIndex=++z);
 const nd=(p,q)=>Math.hypot((p.x-q.x)/CW,(p.y-q.y)/CH);   // distance in card-sizes
-function spot(c,others){                               // a fairly open spot, never right beside a same-colour card
+function spot(c,others,edge){                               // a fairly open spot, never right beside a same-colour card
   let best=null,bs=-1e9;
-  for(let i=0;i<60;i++){const p={x:R(BX[0],BX[1]),y:R(BY[0],BY[1])};
+  for(let i=0;i<120;i++){const p={x:R(BX[0],BX[1]),y:R(BY[0],BY[1])};
     let s=9;for(const o of others){const d=nd(p,o);s=Math.min(s,d);if(o.col===c.col&&d<1.9)s-=5}
+    if(edge&&Math.abs(p.x-W/2)<420)s-=3;
     s+=R(0,.25);if(s>bs){bs=s;best=p}}
   return best;
 }
-cards.forEach((c,i)=>{const p=spot(c,cards.slice(0,i));c.x=p.x;c.y=p.y;c.r=R(-9,9)});
+const START=[[270,560],[680,950],[1090,600],[1490,960],[1880,570],[2170,980]];
+cards.forEach((c,i)=>{c.x=START[i][0]+R(-40,40);c.y=START[i][1]+R(-50,50);c.r=R(-9,9)});
 function place(c){c.el.style.transform=`translate(${c.x}px,${c.y}px) rotate(${c.r}deg) scale(${c.s})`}
 cards.forEach(place);
 const easeIO=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
 const clampP=p=>({...p,x:Math.min(BX[1]+60,Math.max(BX[0]-60,p.x)),y:Math.min(BY[1]+40,Math.max(BY[0]-40,p.y))});
 function onTop(c){return !cards.some(o=>o!==c&&+o.el.style.zIndex>+c.el.style.zIndex&&Math.abs(o.x-c.x)<CW*.95&&Math.abs(o.y-c.y)<CH*.95)}
 let lastC=null;
+let turn=0;
 function pick(now){
   const free=cards.filter(c=>!c.path&&c!==lastC&&onTop(c));if(!free.length)return;
-  const c=free[Math.floor(rnd()*free.length)];lastC=c;
+  const think=(turn++%3)!==2;                          // two out of three moves: bring a card to the middle to look at it
+  const c=think?free.sort((a,b)=>Math.abs(b.x-W/2)-Math.abs(a.x-W/2))[Math.floor(rnd()*Math.min(2,free.length))]
+               :free[Math.floor(rnd()*free.length)];
+  lastC=c;
   const k0={x:c.x,y:c.y,r:c.r,s:SC};
-  const lift={x:c.x+R(-14,14),y:c.y-R(8,20),r:c.r+R(-2,2),s:SC*1.05,d:450};
-  const to=spot(c,cards.filter(o=>o!==c)),rt=R(-10,10);
-  const kind=rnd();let frames;
-  if(kind<.45){                                      // picks it up, holds it while thinking, then puts it somewhere new
-    const mid=clampP({x:(c.x+to.x)/2+R(-160,160),y:(c.y+to.y)/2+R(-140,140)});
-    frames=[lift,{...mid,r:R(-6,6),s:SC*1.07,d:R(1500,2000)},{x:mid.x+R(-30,30),y:mid.y+R(-20,20),r:R(-5,5),s:SC*1.07,d:R(900,1500)},
-            {...to,r:rt,s:SC*1.03,d:R(1400,1900)},{...to,r:rt,s:SC,d:380}];
-  }else if(kind<.8){                                 // slides it across the table in one easy move
+  const lift={x:c.x+R(-14,14),y:c.y-R(10,22),r:c.r+R(-2,2),s:SC*1.05,d:480};
+  let frames;
+  if(think){                                         // picked up from the edge, brought to the centre on top of the others,
+    const cx=W/2+R(-70,70),cy=H/2+R(-30,20),cr=R(-2.5,2.5);   // held for a moment, then put back out on the table
+    const to=spot(c,cards.filter(o=>o!==c),true),rt=R(-10,10);
+    frames=[lift,
+      {x:cx,y:cy,r:cr,s:SC*1.13,d:R(1900,2300)},
+      {x:cx+R(-18,18),y:cy+R(-12,8),r:cr+R(-1.8,1.8),s:SC*1.14,d:R(1400,2000)},
+      {x:cx+R(-14,14),y:cy+R(-8,10),r:cr+R(-1.5,1.5),s:SC*1.13,d:R(1100,1600)},
+      {...to,r:rt,s:SC*1.03,d:R(1900,2400)},{...to,r:rt,s:SC,d:400}];
+  }else if(rnd()<.6){                                // slides it across the table in one easy move
+    const to=spot(c,cards.filter(o=>o!==c)),rt=R(-10,10);
     frames=[lift,{...to,r:rt,s:SC*1.03,d:R(2000,2600)},{...to,r:rt,s:SC,d:380}];
   }else{                                             // a small nudge: just shifts and turns it a little
-    const p=clampP({x:c.x+R(-180,180),y:c.y+R(-110,110)});
-    frames=[{...lift,s:SC*1.02,d:350},{...p,r:c.r+R(-8,8),s:SC*1.02,d:R(1300,1700)},{...p,r:c.r+R(-8,8),s:SC,d:350}];
-    frames[2].r=frames[1].r;
+    const p=clampP({x:c.x+R(-180,180),y:c.y+R(-110,110)}),r2=c.r+R(-8,8);
+    frames=[{...lift,s:SC*1.02,d:350},{...p,r:r2,s:SC*1.02,d:R(1300,1700)},{...p,r:r2,s:SC,d:350}];
   }
   c.el.style.zIndex=++z;c.el.classList.add('lift');    // it is the top card, so nothing visibly jumps
   c.path={t0:now,from:k0,frames,i:0};
