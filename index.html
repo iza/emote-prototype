@@ -503,6 +503,52 @@ function render(anim){
 }
 document.getElementById('restart').onclick=()=>{S=fresh();render(true)};
 render(false);
+/* ---------- autoplay demo: runs while visible, stops for good on first real interaction ---------- */
+(function(){
+  const css=document.createElement('style');
+  css.textContent='.tap{position:absolute;z-index:60;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:rgba(23,23,23,.18);box-shadow:0 0 0 2px rgba(255,255,255,.7);pointer-events:none;transform:scale(.4);opacity:0;transition:transform .25s ease,opacity .25s ease}.tap.on{transform:scale(1);opacity:1}';
+  document.head.appendChild(css);
+  let live=true,visible=false,run=0;
+  const stop=e=>{if(e.isTrusted&&live){live=false;phone.querySelectorAll('.tap').forEach(t=>t.remove())}};
+  ['pointerdown','keydown','wheel','touchstart'].forEach(t=>phone.addEventListener(t,stop,{capture:true,passive:true}));
+  new IntersectionObserver(es=>{visible=es[0].isIntersecting},{threshold:.35}).observe(phone);
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  async function wait(ms,id){let t=0;while(t<ms){if(!live||id!==run)throw 0;await sleep(100);if(visible)t+=100}}
+  const q=s=>{const sc=phone.querySelectorAll('.screen:not(.leaving)');return sc[sc.length-1].querySelector(s)};
+  async function tap(node,id){
+    if(!node)return;
+    const p=phone.getBoundingClientRect(),r=node.getBoundingClientRect();
+    const d=document.createElement('div');d.className='tap';
+    d.style.left=(r.left-p.left+r.width/2)+'px';d.style.top=(r.top-p.top+r.height/2)+'px';
+    phone.appendChild(d);d.offsetWidth;d.classList.add('on');
+    await wait(260,id);node.click();d.classList.remove('on');setTimeout(()=>d.remove(),300);
+  }
+  async function type(text,id){
+    const ta=q('textarea');
+    for(const ch of text){ta.value+=ch;ta.dispatchEvent(new Event('input'));ta.scrollTop=ta.scrollHeight;await wait(ch===' '?55:32,id)}
+  }
+  const chip=label=>[...phone.querySelectorAll('.screen:not(.leaving) .chip')].find(b=>b.textContent===label);
+  const nextBtn=()=>q('[data-act="next"]');
+  async function loop(id){
+    await wait(1400,id);
+    const answers=['Work stress has been building up and I find it hard to switch off.','I tried CBT once. The tools helped, but I wanted more space to talk.','Close to my friends. Things are harder with my family.'];
+    for(const a of answers){await type(a,id);await wait(600,id);await tap(nextBtn(),id);await wait(900,id)}
+    await wait(1600,id);await tap(nextBtn(),id);await wait(1100,id);           // therapy types intro
+    for(const v of [true,true,false,false,true]){await wait(1500,id);await tap(q(`[data-act="${v?'like':'pass'}"]`),id);await wait(500,id)}
+    await wait(1600,id);await tap(nextBtn(),id);await wait(1000,id);           // therapist intro
+    const picks=[['Female'],[],[],['Stress','Anxiety'],[]];
+    for(const p of picks){await wait(700,id);for(const c of p){await tap(chip(c),id);await wait(450,id)}await wait(500,id);await tap(nextBtn(),id);await wait(800,id)}
+    await wait(500,id);await tap(chip('This week'),id);await wait(450,id);await tap(chip('£40–£60'),id);await wait(700,id);await tap(nextBtn(),id);
+    await wait(1200,id);const sc=q('.sum-scroll');                             // summary
+    if(sc){sc.scrollTo({top:sc.scrollHeight,behavior:'smooth'});await wait(2200,id);sc.scrollTo({top:0,behavior:'smooth'});await wait(900,id)}
+    await tap(nextBtn(),id);await wait(2400,id);                               // results
+    const res=q('.res');
+    if(res){for(const k of [1,2,3]){res.scrollTo({top:res.clientHeight*k,behavior:'smooth'});await wait(2200,id)}}
+    await wait(1200,id);
+    S=fresh();render(true);
+  }
+  (async function go(){while(live){const id=++run;try{await loop(id)}catch(e){}}})();
+})();
 </script>
 </body>
 </html>
