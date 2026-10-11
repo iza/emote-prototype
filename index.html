@@ -36,6 +36,10 @@ html.embed,html.embed body{background:transparent}
 html.embed body{min-height:0;height:812px;gap:0}
 html.embed .phone{height:812px;box-shadow:none}
 html.embed .restart{display:none}
+/* small frames (phones): show the whole phone screen, scaled down, no inner page scroll */
+html.embed.fit,html.embed.fit body{height:100%;overflow:hidden}
+html.embed.fit body{justify-content:flex-start}
+html.embed.fit .phone{width:390px;height:812px;flex-shrink:0;border-radius:0;transform:scale(var(--k,1));transform-origin:top center}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden}
 .screen.enter{animation:fade .2s ease-out both}
 .screen.leaving{pointer-events:none}
@@ -197,6 +201,7 @@ html.embed .restart{display:none}
 </head>
 <body>
 <script>if(window.self!==window.top)document.documentElement.classList.add("embed")</script>
+<script>(function(){var d=document.documentElement;if(!d.classList.contains("embed"))return;function fit(){var k=Math.min(1,innerHeight/812,innerWidth/390);if(k<0.999){d.classList.add("fit");d.style.setProperty("--k",k)}else{d.classList.remove("fit");d.style.removeProperty("--k")}}fit();addEventListener("resize",fit)})()</script>
 <div class="phone" id="phone" aria-live="polite"></div>
 <button class="restart" id="restart" type="button">Restart prototype</button>
 
