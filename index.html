@@ -153,6 +153,7 @@ html.embed.fit .phone{width:390px;height:812px;flex-shrink:0;border-radius:0;tra
 .photo img,.photo video{width:100%;height:100%;object-fit:cover;object-position:50% 28%;display:block}.photo{cursor:pointer}.vplay{position:absolute;left:calc(50% + 6px);top:calc(50% - 16px);transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:rgba(38,38,38,.3);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;transition:opacity .25s;pointer-events:none}.vplay svg{width:20px;height:24px;margin-left:4px}.photo.on .vplay{opacity:0}
 .play{position:absolute;left:calc(50% + 6px);top:calc(50% - 16px);transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:rgba(38,38,38,.3);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center}
 .play svg{width:20px;height:24px;margin-left:4px}
+.vplay,.photo .play{display:none!important}.photo{cursor:default}
 .tagwrap{position:relative;margin-top:-31px;padding:0 12px;display:flex;flex-direction:column;gap:6px;flex-shrink:0}
 .tagline{border-radius:12px;padding:8px 12px;font-size:14px;line-height:24px;font-weight:500;color:var(--n800)}
 .pc-pills{display:flex;flex-wrap:wrap;gap:6px}
@@ -486,8 +487,10 @@ function screenResults(){
   const ph=[...scr.querySelectorAll('.photo')];let vAuto=true;
   const vPlay=p=>{ph.forEach(o=>{if(o!==p){o.classList.remove('on');o.querySelector('video').pause()}});if(!p)return;p.classList.add('on');const v=p.querySelector('video');const r=v.play();r&&r.catch(()=>{})};
   const vStop=p=>{p.classList.remove('on');p.querySelector('video').pause()};
-  ph.forEach(p=>p.onclick=()=>{if(p.classList.contains('on')){vAuto=false;vStop(p)}else{vAuto=true;vPlay(p)}});
-  const vSync=()=>{if(!vAuto)return;const i=Math.round(res.scrollTop/res.clientHeight);vPlay(ph[i]||null)};
+  let vSeen=true;
+  if('IntersectionObserver' in window){new IntersectionObserver(es=>{es.forEach(e=>{vSeen=e.isIntersecting;if(vSeen)vSync();else vPlay(null)})},{threshold:.35}).observe(res)}
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)vPlay(null);else vSync()});
+  const vSync=()=>{if(!vAuto||!vSeen){vPlay(null);return}const i=Math.round(res.scrollTop/res.clientHeight);vPlay(ph[i]||null)};
   setTimeout(vSync,450);
   res.addEventListener('scroll',()=>{const i=Math.round(res.scrollTop/res.clientHeight);dots.forEach((d,j)=>d.classList.toggle('on',j===i));dismiss();clearTimeout(res._vt);res._vt=setTimeout(vSync,120)},{passive:true});
   const g=scr.querySelector('.guide');
