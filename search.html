@@ -8,7 +8,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 svg{width:16px;height:16px;flex:none}
 #stage{position:absolute;left:0;top:0;width:1280px;height:800px;transform-origin:0 0;display:flex;flex-direction:column;background:var(--n0)}
 /* top: search */
-.top{flex:none;display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 24px 22px;border-bottom:1px solid var(--n200)}
+.fs{position:absolute;top:16px;right:20px;z-index:5;font-size:12px;font-weight:500;height:30px;padding:0 12px;border-radius:8px;border:1px solid var(--n300);background:#fff;display:flex;align-items:center;gap:6px;color:var(--n600);cursor:pointer}.fs:hover{background:var(--n100);color:var(--n800)}body.m .fs,html.full .fs{display:none}
+.top{position:relative;flex:none;display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 24px 22px;border-bottom:1px solid var(--n200)}
 .top h1{font-size:20px;line-height:28px;font-weight:500;letter-spacing:-.2px}
 .sbar{width:560px;max-width:100%;height:44px;display:flex;align-items:center;gap:8px;padding:0 6px 0 14px;border-radius:999px;background:var(--n100)}
 .sbar input{flex:1;min-width:0;border:0;background:none;font:inherit;font-size:14px;outline:none;color:var(--n800)}
@@ -20,8 +21,8 @@ svg{width:16px;height:16px;flex:none}
 .main{flex:1;min-height:0;display:flex;background:var(--n50)}
 .panel{flex:none;width:300px;overflow-y:auto;padding:20px 20px 24px;border-right:1px solid var(--n200);background:var(--n0);scrollbar-width:thin}
 .panel h2{font-size:16px;line-height:24px;font-weight:500;margin-bottom:12px}
-.tabs{display:flex;padding:3px;border-radius:10px;background:var(--n100);margin-bottom:18px}
-.tabs button{flex:1 1 auto;height:30px;padding:0 8px;border-radius:8px;font-size:12px;white-space:nowrap;color:var(--n600)}
+.tabs{display:flex;overflow:hidden;padding:3px;border-radius:10px;background:var(--n100);margin-bottom:18px}
+.tabs button{flex:1 1 auto;min-width:0;height:30px;padding:0 5px;letter-spacing:-.1px;border-radius:8px;font-size:12px;white-space:nowrap;color:var(--n600)}
 .tabs button[aria-selected="true"]{background:#fff;color:var(--n800);box-shadow:0 1px 2px rgba(0,0,0,.08)}
 .grp{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
 .grp h3{font-size:13px;line-height:20px;font-weight:500}
@@ -34,7 +35,7 @@ svg{width:16px;height:16px;flex:none}
 .res{flex:1;min-width:0;display:flex;flex-direction:column}
 .bar{flex:none;display:flex;align-items:center;gap:10px;padding:16px 24px 12px;font-size:13px}
 .bar b{font-weight:500}
-.bar .sort{margin-left:auto;display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;border:1px solid var(--n300);border-radius:8px;font-size:12px;background:#fff}
+.bar .sort{margin-left:auto;flex-shrink:0;white-space:nowrap;display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;border:1px solid var(--n300);border-radius:8px;font-size:12px;background:#fff}
 .bar .sort select{border:0;background:none;font:inherit;outline:none;cursor:pointer}
 .active{display:flex;gap:6px;flex-wrap:wrap}
 .active button{display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 6px 0 10px;border-radius:999px;background:var(--n800);color:#fff;font-size:11px}
@@ -79,7 +80,7 @@ body.m .gridw{padding:4px 14px 24px}body.m .grid{grid-template-columns:1fr;justi
 .done{display:none}body.m .done{display:block;width:100%;height:40px;border-radius:999px;background:var(--n800);color:#fff;margin-top:6px}
 </style></head><body>
 <div id="stage">
- <div class="top"><h1>Find the right therapist for you today</h1>
+ <div class="top"><button class="fs" id="fsBtn" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>View full screen</button><h1>Find the right therapist for you today</h1>
   <label class="sbar"><span class="ic-s"></span><input id="q" type="search" placeholder="Search by issue, therapy approach or name" autocomplete="off"><button class="go" id="go" type="button">Search</button></label>
   <div class="quick" id="quick"></div></div>
  <div class="main">
@@ -160,5 +161,7 @@ $('#fbtn').onclick=()=>document.body.classList.add('sheet');$('#done').onclick=(
 function fit(){const W=innerWidth,H=innerHeight,m=W<640;document.body.classList.toggle('m',m);const st=$('#stage');
  if(!m){const s=W/1280;st.style.transform=`scale(${s})`;st.style.height=(H/s)+'px';const cw=(1280-300-48-40)/3;cards.forEach(c=>c.style.zoom=cw/360)}
  else{st.style.height='';const z=Math.min(1,(W-28)/360);cards.forEach(c=>c.style.zoom=z)}}
+if(new URLSearchParams(location.search).has('full'))document.documentElement.classList.add('full');
+$('#fsBtn').onclick=()=>{window.open(location.href.split('?')[0]+'?full','_blank','noopener')};
 addEventListener('resize',fit);fit();drawGroups();sync();
 </script></body></html>
