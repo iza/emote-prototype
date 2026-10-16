@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deck product icons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..600&display=swap" rel="stylesheet">
+<style>
+:root{--spring:cubic-bezier(.3,1.65,.45,1);--d:.958s;--ink:#1f0f19;--ink2:#4d4d75}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-optical-sizing:auto;-webkit-font-smoothing:antialiased;background:#f6f6f8;overflow:hidden;display:flex;align-items:center;justify-content:center}
+html.embed body{background:transparent}
+#stage{width:960px;height:360px;flex:none;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:20px;transform-origin:center}
+.card{background:#fff;border-radius:18px;box-shadow:0 0 0 1px rgba(20,22,48,.04),0 10px 30px -20px rgba(20,22,48,.18);padding:30px 30px 28px;display:flex;flex-direction:column;justify-content:space-between;cursor:default;transition:background .5s,box-shadow .5s}
+.card.on{background:#fafafb;box-shadow:0 0 0 1px rgba(20,22,48,.06),0 16px 40px -22px rgba(20,22,48,.26)}
+.ic{width:120px;height:120px}
+.ic svg{width:120px;height:120px;overflow:visible;display:block}
+.ic svg *{transform-box:fill-box;transition:transform var(--d) var(--spring)}
+.mb{mix-blend-mode:multiply}
+/* Figma Smart animate · Bouncy (spring: mass 1, stiffness 600, damping 15) · 958ms */
+@supports (transition-timing-function:linear(0,1)){:root{--spring:linear(0,0.1064,0.3662,0.6872,0.9885,1.2141,1.338,1.3614,1.3055,1.2022,1.0847,0.9804,0.9071,0.8716,0.8712,0.8971,0.9371,0.9795,1.0151,1.0384,1.0479,1.0452,1.0341,1.019,1.0039,0.9919,0.9847,0.9824,0.9843,0.9889,0.9945,0.9998,1.0038,1.0059,1.0063,1.0054,1.0035,1.0015,0.9996,0.9984,0.9977,0.9977,0.9982,0.9989,0.9996,1.0003,1.0007,1.0008,1)}}
+.nm{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:600;letter-spacing:.04em;color:var(--ink);text-transform:uppercase}
+.nm i{width:0;height:0;border-left:6px solid var(--ink);border-top:4px solid transparent;border-bottom:4px solid transparent;opacity:0;transform:translateX(-6px);transition:opacity .4s,transform .6s var(--spring)}
+.card.on .nm i{opacity:1;transform:none}
+.tl{font-size:15px;color:var(--ink2);margin-top:6px;letter-spacing:-.008em;transition:color .4s}
+.card.on .tl{color:#161823}
+/* Rewind: two left-pointing triangles grow and overlap more */
+.rw .a{transform-origin:left center}
+.rw .b{transform-origin:left center}
+.card.on .rw .a{transform:scale(1,1.125)}
+.card.on .rw .b{transform:translateX(-3px) scale(1.1667,1.111)}
+/* Stream: play triangle grows, circle grows and slides behind it */
+.sm .t{transform-origin:left center}
+.sm .c{transform-origin:center}
+.card.on .sm .t{transform:scale(1.1667,1.125)}
+.card.on .sm .c{transform:translateX(-2px) scale(1.333)}
+/* Studio: blocks swap widths */
+.sd{position:relative;width:120px;height:120px;display:flex;flex-direction:column;gap:12px;padding:6px}
+.sd>div{display:flex;gap:12px;height:48px}
+.sd span{display:block;height:48px;border-radius:6px;flex:none;transition:width var(--d) var(--spring)}
+.sd .n{background:#0000db}.sd .c{background:#29b9d6}
+.sd .s{width:24px}.sd .l{width:72px}
+.card.on .sd .s{width:72px}.card.on .sd .l{width:24px}
+</style></head>
+<body>
+<div id="stage">
+ <div class="card" data-k="0"><div class="ic"><svg class="rw" viewBox="0 0 20 20"><path class="a mb" d="M2.496 8.336L12.000 2.000L12.000 18.000L2.496 11.664A2 2 0 0 1 2.496 8.336Z" fill="#ca1ced"/><path class="b mb" d="M10.133 8.400L20.000 1.000L20.000 19.000L10.133 11.600A2 2 0 0 1 10.133 8.400Z" fill="#29b9d6"/></svg></div>
+  <div><div class="nm">Rewind<i></i></div><p class="tl">Access utility data history</p></div></div>
+ <div class="card" data-k="1"><div class="ic"><svg class="sm" viewBox="0 0 20 20"><circle class="c" cx="14" cy="10" r="6" fill="#f5bc20"/><path class="t mb" d="M9.504 8.336L0.000 2.000L0.000 18.000L9.504 11.664A2 2 0 0 0 9.504 8.336Z" fill="#ca1ced"/></svg></div>
+  <div><div class="nm">Stream<i></i></div><p class="tl">Link once, stay connected</p></div></div>
+ <div class="card" data-k="2"><div class="ic"><div class="sd"><div><span class="n s"></span><span class="c l"></span></div><div><span class="c l"></span><span class="n s"></span></div></div></div>
+  <div><div class="nm">Studio<i></i></div><p class="tl">Extend your data universe</p></div></div>
+</div>
+<script>
+const cards=[...document.querySelectorAll('.card')];let k=0,t=null,user=false,vis=false;
+function set(i){cards.forEach((c,j)=>c.classList.toggle('on',j===i))}
+function tick(){if(user||!vis)return;set(k);setTimeout(()=>{if(!user)set(-1)},1700);k=(k+1)%3;t=setTimeout(tick,2600)}
+cards.forEach((c,i)=>{c.addEventListener('pointerenter',()=>{user=true;clearTimeout(t);set(i)});c.addEventListener('pointerleave',()=>{set(-1);user=false;clearTimeout(t);t=setTimeout(tick,1800)})});
+function fit(){const e=document.documentElement.classList.contains('embed'),m=e?0:40,s=Math.min((innerWidth-m)/960,(innerHeight-m)/360,1.3);document.getElementById('stage').style.transform=`scale(${s})`}
+if(window.self!==window.top||/embed/.test(location.search))document.documentElement.classList.add('embed');
+addEventListener('resize',fit);fit();
+new IntersectionObserver(es=>es.forEach(e=>{vis=e.isIntersecting;clearTimeout(t);if(vis)t=setTimeout(tick,500);else set(-1)}),{threshold:.3}).observe(document.getElementById('stage'));
+</script>
+</body></html>
