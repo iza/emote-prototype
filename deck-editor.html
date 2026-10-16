@@ -13,7 +13,7 @@ html.embed body{background:transparent}
 #wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
 #stage{position:relative;width:1100px;height:690px;flex:none;transform-origin:center}
 .win{position:absolute;inset:0;display:flex;flex-direction:column;border-radius:14px;background:#fff;box-shadow:0 0 0 1px rgba(20,22,48,.07),0 1px 2px rgba(20,22,48,.04),0 18px 40px -22px rgba(20,22,48,.22);overflow:hidden}
-html.embed .win{box-shadow:none;border-radius:0}
+html.embed .win{box-shadow:none;border-radius:var(--er,16px)}
 .bar{flex:none;height:50px;display:flex;align-items:center;padding:0 18px;position:relative}
 .dots{display:flex;gap:8px}.dots i{width:12px;height:12px;border-radius:50%;background:#e3e5eb}
 .url{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:420px;height:31px;border-radius:9px;background:#f3f4f7;display:flex;align-items:center;justify-content:center;gap:7px;font-size:13.5px;color:#4a4d66;letter-spacing:-.006em}
@@ -184,7 +184,7 @@ async function demo(id){
   cur.classList.remove('on');await sleep(1400);
  }
 }
-function fit(){const e=document.documentElement.classList.contains('embed'),m=e?0:40;const s=Math.min((innerWidth-m)/W,(innerHeight-m)/H,1.2);$('#stage').style.transform=`scale(${s})`}
+function fit(){const e=document.documentElement.classList.contains('embed'),m=e?0:40;const s=Math.min((innerWidth-m)/W,(innerHeight-m)/H,1.2);$('#stage').style.transform=`scale(${s})`;$('#stage').style.setProperty('--er',(16/s)+'px')}
 if(window.self!==window.top||/embed/.test(location.search))document.documentElement.classList.add('embed');
 addEventListener('resize',fit);fit();
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(manual)return;if(e.isIntersecting){if(!demo.on){demo.on=1;demo(++run)}}else{demo.on=0;run++;cur.classList.remove('on')}}),{threshold:.2});
