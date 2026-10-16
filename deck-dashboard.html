@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deck platform dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
+<style>
+:root{--ease:cubic-bezier(.22,1,.36,1);--ink:#161823;--ink2:#3f3f61;--mute:#74768c;--navy:#0b0b36;--line:#e3e6ee;--grid:#dfe3ec;--blue:#2c4bff;--link:#1534e5;--vio:#6b63e8}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-optical-sizing:auto;font-feature-settings:'cv11','ss03';-webkit-font-smoothing:antialiased;background:#eceef4;overflow:hidden;color:var(--ink);user-select:none}
+html.embed body{background:transparent}
+#wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{position:relative;width:1100px;height:690px;flex:none;transform-origin:center}
+.win{position:absolute;inset:0;display:flex;flex-direction:column;border-radius:14px;background:#fff;box-shadow:0 0 0 1px rgba(20,22,48,.07),0 18px 40px -22px rgba(20,22,48,.22);overflow:hidden}
+html.embed .win{box-shadow:none;border-radius:var(--er,16px)}
+.bar{flex:none;height:50px;display:flex;align-items:center;padding:0 18px;position:relative}
+.dots{display:flex;gap:8px}.dots i{width:12px;height:12px;border-radius:50%;background:#e3e5eb}
+.url{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:420px;height:31px;border-radius:9px;background:#f3f4f7;display:flex;align-items:center;justify-content:center;gap:7px;font-size:13.5px;color:#4a4d66}
+.url svg{width:11px;height:13px}
+.view{position:relative;flex:1;margin:0 10px 10px;border-radius:9px;overflow:hidden;display:flex;box-shadow:0 0 0 1px #eceef3}
+.side{width:180px;flex:none;background:#fbfbfd;border-right:1px solid #eceef3;display:flex;flex-direction:column;padding:16px 10px 14px}
+.cli{display:flex;align-items:center;gap:9px;padding:4px 8px 16px;font-size:14px;font-weight:600;letter-spacing:-.012em}
+.cli i{width:26px;height:26px;border-radius:8px;background:#5b3fd6;color:#fff;font-style:normal;font-size:13px;font-weight:600;display:grid;place-items:center}
+.nav a{display:flex;align-items:center;gap:10px;height:36px;padding:0 10px;border-radius:8px;font-size:13px;color:var(--ink2);cursor:pointer;transition:background .25s}
+.nav a svg{width:15px;height:15px;flex:none}
+.nav a.on{background:#eceff6;color:var(--ink);font-weight:500}
+.nav a.dim{opacity:.55;cursor:default}
+.dl{margin-top:auto;padding:0 10px}
+.main{position:relative;flex:1;min-width:0;overflow:hidden}
+.top{position:absolute;left:24px;right:20px;top:14px;display:flex;align-items:center;gap:14px}
+.sch{width:330px;height:34px;border-radius:17px;background:#f3f4f8;display:flex;align-items:center;gap:8px;padding:0 13px;font-size:12.5px;color:#7a7c92;margin:0 auto}
+.sch svg{width:13px;height:13px}
+.ico{display:flex;gap:14px;color:#3f3f61}.ico svg{width:15px;height:15px}
+.pg{position:absolute;left:24px;right:20px;top:62px;bottom:0;opacity:0;transform:translateY(8px);filter:blur(3px);transition:opacity .45s var(--ease),transform .55s var(--ease),filter .45s;pointer-events:none}
+.pg.on{opacity:1;transform:none;filter:none;pointer-events:auto}
+h2{font-size:23px;font-weight:700;letter-spacing:-.03em}
+.sub{font-size:12.5px;color:var(--ink2);margin-top:5px;line-height:18px}
+.fil{display:flex;align-items:center;gap:7px;margin-top:16px;position:relative}
+.fil b{font-size:13px;font-weight:600;margin-right:4px;letter-spacing:-.008em}
+.ch{height:29px;padding:0 10px;border-radius:6px;border:1px solid #d9dce5;font-size:11.5px;color:var(--ink2);display:flex;align-items:center;gap:6px;cursor:pointer;background:#fff;transition:all .2s;white-space:nowrap}
+.ch svg{width:9px;height:9px}
+.ch.act{background:#eef1ff;border-color:#b9c3ff;color:#2337c6}
+.clr{font-size:11.5px;color:var(--ink2);padding:0 6px;cursor:pointer}
+.sp{flex:1}
+.btn{height:31px;padding:0 13px;border-radius:7px;font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:transform .15s,background .3s;white-space:nowrap}
+.btn.p{background:var(--navy);color:#fff}.btn.o{border:1px solid #cfd3de;color:var(--ink)}
+.btn svg{width:12px;height:12px}
+.press{transform:scale(.95)}
+.dd{position:absolute;top:34px;width:190px;background:#fff;border:1px solid #d9dce5;border-radius:8px;box-shadow:0 14px 30px -14px rgba(20,22,48,.3);padding:4px;opacity:0;transform:translateY(-4px);transition:opacity .2s,transform .25s var(--ease);pointer-events:none;z-index:6}
+.dd.on{opacity:1;transform:none;pointer-events:auto}
+.dd div{height:30px;border-radius:5px;display:flex;align-items:center;gap:8px;padding:0 9px;font-size:12px;color:var(--ink2);cursor:pointer}
+.dd div:hover,.dd div.hv{background:#f2f4f9}
+/* tables */
+.tbl{margin-top:12px;border:1px solid var(--grid);border-radius:8px;overflow:hidden;position:relative}
+.tr{display:grid;border-top:1px solid var(--grid);transition:opacity .35s,max-height .45s var(--ease),background .4s;max-height:64px;overflow:hidden;position:relative}
+.tr.hd{border-top:0;background:#f8f9fb;max-height:none}
+.tr.hd>div{font-size:9.5px;font-weight:500;letter-spacing:.05em;color:#5b5e78;text-transform:uppercase;height:30px}
+.tr>div{padding:0 10px;display:flex;flex-direction:column;justify-content:center;font-size:11.5px;color:var(--ink);border-left:1px solid var(--grid);height:54px;min-width:0;white-space:nowrap}
+.tr>div:first-child{border-left:0}
+.tr>div small{font-size:10px;color:var(--mute);margin-top:2px;overflow:hidden;text-overflow:ellipsis}
+.tr .a{color:var(--link)}
+.tr.hide{max-height:0;opacity:0;border-top-width:0}
+.tr.new{background:#f4f7ff}
+.cbx{width:12px;height:12px;border:1px solid #c3c6d4;border-radius:3px;align-self:center}
+.flag{position:absolute;left:4px;top:3px;height:14px;padding:0 5px;border-radius:3px;color:#fff;font-size:8px;font-weight:500;letter-spacing:.03em;display:flex;align-items:center;gap:3px;text-transform:uppercase}
+.fb{position:absolute;left:0;top:0;height:20px;right:0}
+.has-flag>div{padding-top:12px}
+.pill{display:inline-flex;align-self:flex-start;height:20px;padding:0 8px;border-radius:10px;font-size:10.5px;font-weight:500;align-items:center;gap:5px}
+.pill i{width:6px;height:6px;border-radius:50%}
+.ok{background:#e7f6ec;color:#1f7a3d}.ok i{background:#2fa45a}
+.pe{background:#fff4e0;color:#9a5b00}.pe i{background:#f0a020}
+.rc{background:#ffe9ec;color:#b42339}.rc i{background:#e0435c}
+/* drawer */
+.drw{position:absolute;top:0;right:0;bottom:0;width:410px;background:#fff;box-shadow:-20px 0 40px -24px rgba(20,22,48,.3);border-left:1px solid #eceef3;padding:24px 26px;transform:translateX(105%);transition:transform .55s var(--ease);z-index:8}
+.drw.on{transform:none}
+.drw h3{font-size:18px;font-weight:700;letter-spacing:-.02em}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin-top:16px}
+.fg label{display:block;font-size:11px;color:var(--ink2);margin-bottom:5px}
+.inp{height:32px;border-radius:6px;border:1px solid #d6d9e3;background:#fafbfc;padding:0 10px;display:flex;align-items:center;font-size:12px;color:var(--ink);transition:border-color .2s}
+.inp.f{border-color:var(--ink2);background:#fff}
+.full{grid-column:1/-1}
+.cr{margin-top:16px;border-radius:9px;background:#e4f1f9;padding:12px 14px;display:flex;gap:12px;align-items:flex-start}
+.cr b{font-size:12.5px;font-weight:600}.cr p{font-size:10.5px;line-height:15px;color:var(--ink2);margin-top:3px}
+.tg{width:30px;height:17px;border-radius:9px;background:var(--blue);position:relative;flex:none;margin-left:auto}
+.tg::after{content:'';position:absolute;left:15px;top:2px;width:13px;height:13px;border-radius:50%;background:#fff}
+.rad{display:flex;gap:16px;font-size:11.5px;color:var(--ink2);margin-top:14px;align-items:center}
+.rad b{color:var(--ink);font-weight:600;margin-right:4px}
+.rad span{display:flex;align-items:center;gap:6px}.rad i{width:12px;height:12px;border-radius:50%;border:1.5px solid #b9bccb}.rad .on i{border-color:var(--blue);box-shadow:inset 0 0 0 2.5px #fff;background:var(--blue)}
+.drw .btn.p{margin-top:18px;width:120px;justify-content:center}
+.toast{position:absolute;left:50%;bottom:18px;transform:translate(-50%,14px);height:34px;padding:0 14px;border-radius:9px;background:var(--navy);color:#fff;font-size:12px;display:flex;align-items:center;gap:8px;opacity:0;transition:all .4s var(--ease);z-index:9}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast svg{width:13px;height:13px}
+/* analytics */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.cd{border:1px solid var(--line);border-radius:9px;padding:12px 14px;height:205px;position:relative;overflow:hidden}
+.cd .t{font-size:11.5px;color:var(--ink2)}
+.cd .v{font-size:22px;font-weight:600;letter-spacing:-.02em;color:#2b2d50;margin-top:3px;display:flex;align-items:baseline;gap:6px}
+.cd .v small{font-size:11.5px;font-weight:400;color:var(--ink2);letter-spacing:0}
+.cd svg.ln{position:absolute;left:14px;right:14px;bottom:34px;width:calc(100% - 28px);height:100px}
+.lg{position:absolute;right:14px;bottom:10px;display:flex;gap:6px;font-size:9.5px;color:var(--ink2)}
+.lg span{display:flex;align-items:center;gap:4px;background:#f1f3f8;border-radius:3px;padding:2px 6px}
+.lg i{width:10px;height:2px;background:var(--vio)}
+.rows{margin-top:12px;display:flex;flex-direction:column;gap:7px}
+.rw{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;color:var(--ink2);border-bottom:1px solid #e6e8ef;padding-bottom:5px}
+.rw b{font-weight:400;color:var(--ink)}
+.rw em{font-style:normal;font-size:14px;font-weight:500;color:#2b2d50}
+.bar2{height:3px;border-radius:2px;background:#eef0f6;margin-top:-4px;overflow:hidden}.bar2 i{display:block;height:100%;background:var(--vio);width:0;transition:width 1.1s var(--ease)}
+.pie{position:absolute;left:50%;top:62px;width:104px;height:104px;margin-left:-52px;border-radius:50%;background:conic-gradient(#5c6ad8 0 var(--a,0%),#7a8cf5 var(--a,0%) var(--b,0%),#2b2aa8 var(--b,0%) var(--c,0%),#eef0f6 var(--c,0%))}
+.pie::after{content:'';position:absolute;inset:30px;border-radius:50%;background:#fff}
+#cur{position:absolute;left:0;top:0;width:18px;height:22px;z-index:30;pointer-events:none;transition:transform .9s cubic-bezier(.65,0,.25,1),opacity .4s;opacity:0;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.3))}
+#cur.on{opacity:1}
+#cur svg{display:block;width:18px;height:22px;transition:transform .15s}
+#cur.dn svg{transform:scale(.86)}
+.hint{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);height:28px;padding:0 12px;border-radius:14px;background:rgba(11,11,54,.82);color:#fff;font-size:12px;display:flex;align-items:center;opacity:0;transition:opacity .4s;pointer-events:none;z-index:25;white-space:nowrap}
+.hint.on{opacity:1}
+</style></head>
+<body>
+<div id="wrap"><div id="stage"><div class="win">
+ <div class="bar"><div class="dots"><i></i><i></i><i></i></div>
+  <div class="url"><svg viewBox="0 0 11 13" fill="none"><rect x="1" y="5.5" width="9" height="6.8" rx="1.6" fill="#4a4d66"/><path d="M3 5.6V4a2.5 2.5 0 0 1 5 0v1.6" stroke="#4a4d66" stroke-width="1.4"/></svg><span id="u">app.datadeck.co/consumption</span></div></div>
+ <div class="view" id="view">
+  <aside class="side">
+   <div class="cli"><i>V</i>Verdant</div>
+   <nav class="nav" id="nav">
+    <a class="dim"><svg viewBox="0 0 16 16" fill="none" stroke="#3f3f61" stroke-width="1.3" stroke-linejoin="round"><path d="M2.5 7 8 2.5 13.5 7v6.5h-4V10h-3v3.5h-4z"/></svg>Home</a>
+    <a class="dim"><svg viewBox="0 0 16 16" fill="none" stroke="#3f3f61" stroke-width="1.3" stroke-linecap="round"><path d="M6.5 9.5 9.5 6.5M7 4.5l1.2-1.2a2.6 2.6 0 0 1 3.7 3.7L10.7 8.2M9 11.5l-1.2 1.2a2.6 2.6 0 0 1-3.7-3.7l1.2-1.2"/></svg>Deck Link</a>
+    <a data-p="sites"><svg viewBox="0 0 16 16" fill="none" stroke="#3f3f61" stroke-width="1.3" stroke-linecap="round"><path d="M2.5 5h11M2.5 11h11"/><circle cx="6" cy="5" r="1.6" fill="#fbfbfd"/><circle cx="10.5" cy="11" r="1.6" fill="#fbfbfd"/></svg>Parameters</a>
+    <a class="dim"><svg viewBox="0 0 16 16" fill="none" stroke="#3f3f61" stroke-width="1.3"><circle cx="4" cy="8" r="1.8"/><circle cx="12" cy="4" r="1.8"/><circle cx="12" cy="12" r="1.8"/><path d="M5.7 7.2 10.3 4.8M5.7 8.8l4.6 2.4"/></svg>Connections</a>
+    <a data-p="cons" class="on"><svg viewBox="0 0 16 16" fill="none" stroke="#3f3f61" stroke-width="1.3" stroke-linecap="round"><rect x="2.5" y="2.5" width="11" height="11" rx="2.5"/><path d="M5.5 10V8M8 10V6M10.5 10V7"/></svg>Consumption</a>
+    <a data-p="ana"><svg viewBox="0 0 16 16" fill="none" stroke="#3f3f61" stroke-width="1.3" stroke-linecap="round"><path d="M2.5 13.5h11M4.5 11V7M8 11V3.5M11.5 11V8"/></svg>Analytics</a>
+   </nav>
+   <div class="dl" id="dlogo"></div>
+  </aside>
+  <section class="main" id="main">
+   <div class="top"><div class="sch"><svg viewBox="0 0 13 13" fill="none" stroke="#3f3f61" stroke-width="1.4" stroke-linecap="round"><circle cx="5.6" cy="5.6" r="4"/><path d="m8.6 8.6 3 3"/></svg>Search data by any parameter</div>
+    <div class="ico"><svg viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="7.5" cy="5" r="2.6"/><path d="M2.5 13.5c.6-2.6 2.6-4 5-4s4.4 1.4 5 4"/></svg><svg viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M3.5 10.5V7a4 4 0 0 1 8 0v3.5l1 1.5h-10zM6 13.3a1.6 1.6 0 0 0 3 0"/></svg><svg viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="7.5" cy="7.5" r="2"/><path d="M7.5 1.5v2M7.5 11.5v2M1.5 7.5h2M11.5 7.5h2M3.3 3.3l1.4 1.4M10.3 10.3l1.4 1.4M3.3 11.7l1.4-1.4M10.3 4.7l1.4-1.4"/></svg></div></div>
+   <!-- Consumption -->
+   <div class="pg on" id="cons">
+    <h2>Consumption Data</h2><p class="sub">View, filter and export your standardised consumption data from all connections in one place.</p>
+    <div class="fil"><b>Filter by</b><span class="ch">Last year<svg viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="m2 3.2 2.5 2.5L7 3.2"/></svg></span><span class="ch">Utility type<svg viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="m2 3.2 2.5 2.5L7 3.2"/></svg></span><span class="ch" id="fprov"><span id="fprovt">Utility provider</span><svg viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="m2 3.2 2.5 2.5L7 3.2"/></svg></span><span class="ch">Site<svg viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="m2 3.2 2.5 2.5L7 3.2"/></svg></span><span class="clr" id="clr">Clear filters</span><span class="sp"></span><span class="btn o"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5v6M3.5 5 6 7.5 8.5 5M2 10.5h8"/></svg>Download PDF</span><span class="btn p">Export as CSV</span>
+     <div class="dd" id="ddp" style="left:210px"><div data-v="PG&amp;E">PG&amp;E</div><div data-v="SCE">SCE</div><div data-v="Hydro-Québec">Hydro-Québec</div></div></div>
+    <div class="tbl" id="ctbl"></div>
+   </div>
+   <!-- Sites -->
+   <div class="pg" id="sites">
+    <h2>Parameters</h2><p class="sub">Configure physical sites and general parameters for your no-code environment.</p>
+    <div class="fil"><b>Filter by</b><span class="ch">City<svg viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="m2 3.2 2.5 2.5L7 3.2"/></svg></span><span class="ch">Country<svg viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="m2 3.2 2.5 2.5L7 3.2"/></svg></span><span class="ch">Status<svg viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="m2 3.2 2.5 2.5L7 3.2"/></svg></span><span class="sp"></span><span class="btn o"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10.5v-6M3.5 7 6 4.5 8.5 7M2 1.5h8"/></svg>Import CSV</span><span class="btn p" id="add"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 2v8M2 6h8"/></svg>Add site</span></div>
+    <div class="tbl" id="stbl"></div>
+   </div>
+   <!-- Analytics -->
+   <div class="pg" id="ana">
+    <h2>Analytics</h2><p class="sub">Monitor connection health, login success and provider errors across your sites.</p>
+    <div class="fil"><span class="ch">Last 7 days<svg viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="m2 3.2 2.5 2.5L7 3.2"/></svg></span><span class="ch">Owner<svg viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="m2 3.2 2.5 2.5L7 3.2"/></svg></span><span class="ch">Status<svg viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="m2 3.2 2.5 2.5L7 3.2"/></svg></span><span class="sp"></span><span class="btn o">Customise<svg viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="m2 3.2 2.5 2.5L7 3.2"/></svg></span></div>
+    <div class="cards" id="cards"></div>
+   </div>
+   <div class="drw" id="drw"><h3>Add new site</h3>
+    <div class="fg"><div><label>Name</label><div class="inp" id="fn"></div></div><div><label>Site manager</label><div class="inp" id="fm"></div></div>
+     <div class="full"><label>Address</label><div class="inp" id="fa"></div></div>
+     <div><label>City</label><div class="inp" id="fc"></div></div><div><label>Country</label><div class="inp" id="fk"></div></div></div>
+    <div class="rad"><b>Status</b><span class="on"><i></i>Active</span><span><i></i>Inactive</span></div>
+    <div class="cr"><div><b>Create a connection request</b><p>A request is sent to the site manager’s email automatically whenever a site is created, manually or via CSV import.</p></div><span class="tg"></span></div>
+    <span class="btn p" id="sub">Submit</span></div>
+   <div class="toast" id="toast"><svg viewBox="0 0 13 13" fill="none" stroke="#7be09b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.8 5.2 9.5 10.5 3.5"/></svg>Connection request sent to the site manager</div>
+  </section>
+  <div class="hint" id="hint">Try it: switch views in the sidebar, filter and add a site</div>
+  <div id="cur"><svg viewBox="0 0 18 22"><path d="M2 1.5v16.2l4.3-4 2.9 6.6 2.9-1.3-2.9-6.4h6z" fill="#121331" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+ </div>
+</div></div></div>
+<script>
+const $=s=>document.querySelector(s),view=$('#view'),cur=$('#cur');
+$('#dlogo').innerHTML='<svg height="17" viewBox="0 0 64 20" fill="none"><g stroke="#3f3f61" stroke-width="1.2"><rect x="1.5" y="3.5" width="11" height="11" rx="2.5" transform="rotate(-12 7 9)"/><rect x="3.5" y="5" width="11" height="11" rx="2.5" transform="rotate(-6 9 10.5)"/><rect x="5.5" y="6.5" width="11" height="11" rx="2.5"/></g><text x="22" y="15" font-family="Inter,sans-serif" font-weight="600" font-size="14" fill="#3f3f61" letter-spacing="-.3">Deck</text></svg>';
+const W=1100,H=690;let run=0,manual=false;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const ck='<span class="cbx"></span>';
+/* consumption rows */
+const C=[['3298471502','8799 Carpenter Ave, Los Angeles, CA','INV-20250122034','Feb 05, 2025','Jan 05 – Feb 04, 2025','31 days','PG&E','Electricity','Los Angeles, CA','United States','198,472 kWh','$1,591.50',''],
+['4982736159','124 Glen Creek Ave, Vacaville, CA','INV-20250303056','Feb 05, 2025','Jan 06 – Feb 03, 2025','29 days','SCE','Electricity','Vacaville, CA','United States','72 kWh','$12,081.18','pink|Inconsistency'],
+['8372019456','30 E. Applegate St, New York, NY','INV-20250225078','Jan 05, 2025','Nov 05 – Dec 04, 2024','31 days','Hydro-Québec','Electricity','New York, NY','United States','32,658 kWh','$277.60','blue|No new data'],
+['1659034721','49 E. Oak Valley St, Santa Clara, CA','—','','—','','PG&E','Electricity, Gas','Santa Clara, CA','United States','—','—','orange|Locked account'],
+['3298471510','121er Avenue, Montreal, QC','INV-20250921032','Jan 05, 2025','Dec 05, 2024 – Jan 04, 2025','31 days','Hydro-Québec','Electricity','Montreal','Canada','243,715 kWh','$2,631.00',''],
+['2901384765','124 Glen Creek Ave, Vacaville, CA','INV-20250218045','Feb 11, 2025','Jan 08 – Feb 10, 2025','31 days','SCE','Electricity','Vacaville, CA','United States','243,715 kWh','$2,131.00',''],
+['5149083726','4 E. Cypress Court, Bronx, NY','INV-20250811500','Jan 05, 2025','Nov 05 – Dec 04, 2024','31 days','Hydro-Québec','Electricity','New York, NY','United States','355,821 kWh','$3,049.20','']];
+const FC={pink:['#ffc0c0','#eb3779'],blue:['#aaddff','#166de6'],orange:['#ffdd98','#f27d23']};
+const cg='grid-template-columns:28px 1.45fr 1.1fr 1.25fr .9fr 1fr .95fr .8fr';
+$('#ctbl').innerHTML=`<div class="tr hd" style="${cg}"><div>${ck}</div><div>Account</div><div>Invoice / date</div><div>Billing period</div><div>Provider</div><div>City / country</div><div>Consumption</div><div>Charge</div></div>`+C.map(r=>{let f='';if(r[12]){const[c,t]=r[12].split('|');f=`<span class="fb" style="width:calc(28px + (100% - 28px)*1.45/8.45);left:28px;background:${FC[c][0]}"></span><span class="flag" style="left:32px;background:${FC[c][1]}">${t}</span>`}
+ return `<div class="tr${r[12]?' has-flag':''}" data-p="${r[6]}" style="${cg}">${f}<div>${ck}</div><div><span class="a">${r[0]}</span><small>${r[1]}</small></div><div>${r[2]}<small>${r[3]}</small></div><div>${r[4]}<small>${r[5]}</small></div><div>${r[6]}<small>${r[7]}</small></div><div>${r[8]}<small>${r[9]}</small></div><div>${r[10]}</div><div>${r[11]}<small>${r[11]==='—'?'':'USD'}</small></div></div>`}).join('');
+/* sites rows */
+const S=[['123','Montreal AV','12 1er Avenue, Montreal, QC','Montreal','ok|Active','m.roy@verdant.co'],['234','Toronto Bay','500 Bay St, Unit 6, Toronto','Toronto','ok|Active','a.chen@verdant.co'],['345','Paris HQ','50 Bd Haussmann, Paris','Paris','rc|Needs reconnecting','l.martin@verdant.co'],['567','Brooklyn Office','139 Smith St, Brooklyn, NY','New York','ok|Active','j.diaz@verdant.co'],['678','San Francisco Warehouse','1 Market St, San Francisco, CA','San Francisco','pe|Pending','k.wong@verdant.co'],['890','Hamilton Distribution','1000 Hamilton St, Vancouver','Vancouver','ok|Active','s.patel@verdant.co'],['987','Mexico City Office','Blvd. Adolfo López Mateos 20','Mexico City','ok|Active','r.lopez@verdant.co']];
+const sg='grid-template-columns:28px .55fr 1.5fr 1.9fr 1.05fr 1.25fr 1.45fr';
+const srow=(r,cls='')=>{const[c,t]=r[4].split('|');return `<div class="tr ${cls}" style="${sg}"><div>${ck}</div><div>${r[0]}</div><div>${r[1]}</div><div>${r[2]}</div><div>${r[3]}</div><div><span class="pill ${c}"><i></i>${t}</span></div><div>${r[5]}</div></div>`};
+function renderSites(){$('#stbl').innerHTML=`<div class="tr hd" style="${sg}"><div>${ck}</div><div>Code</div><div>Name</div><div>Address</div><div>City</div><div>Status</div><div>Site manager</div></div>`+S.map(r=>srow(r)).join('')}
+renderSites();
+/* analytics */
+function line(seed){let d='M0 70',x=0;const ys=[70,60,64,48,58,40,50,36,44,30,38,22,30,18,24,10];ys.forEach((y,i)=>{const nx=i*20;d+=` S${nx-10} ${y+seed} ${nx} ${y+seed}`});return d}
+$('#cards').innerHTML=`
+<div class="cd" data-n="183"><p class="t">Active logins · daily average</p><p class="v"><span class="num">0</span></p><svg class="ln" viewBox="0 0 300 100" preserveAspectRatio="none"><path class="ar" d="${line(0)} L300 100 L0 100Z" fill="#eceaf9" opacity="0"/><path class="pl" d="${line(0)}" fill="none" stroke="#6b63e8" stroke-width="2"/></svg><div class="lg"><span><i></i>Jan 2 – Jan 8</span><span><i style="background:repeating-linear-gradient(90deg,#6b63e8 0 3px,transparent 3px 5px)"></i>Dec 26 – Jan 1</span></div></div>
+<div class="cd" data-n="92.76" data-s="%"><p class="t">Logins · by status</p><p class="v"><span class="num">0</span><small>Successful</small></p><div class="rows">${[['Valid','1,191 logins',92.76],['Invalid','46 logins',3.58],['MFA required','33 logins',2.57],['Other errors','14 logins',1.09]].map(r=>`<div><div class="rw"><span>${r[0]} <b>${r[1]}</b></span><em>${r[2]}%</em></div><div class="bar2"><i data-w="${r[2]}"></i></div></div>`).join('')}</div></div>
+<div class="cd" data-n="742"><p class="t">New statements · daily average</p><p class="v"><span class="num">0</span></p><svg class="ln" viewBox="0 0 300 100" preserveAspectRatio="none"><path class="ar" d="${line(6)} L300 100 L0 100Z" fill="#eceaf9" opacity="0"/><path class="pl" d="${line(6)}" fill="none" stroke="#6b63e8" stroke-width="2"/></svg><div class="lg"><span><i></i>Jan 2 – Jan 8</span><span><i style="background:repeating-linear-gradient(90deg,#6b63e8 0 3px,transparent 3px 5px)"></i>Dec 26 – Jan 1</span></div></div>
+<div class="cd" data-n="90.92" data-s="%"><p class="t">Connections · by status</p><p class="v"><span class="num">0</span><small>Connected</small></p><div class="rows">${[['Connected','1,642',90.92],['Pending','92',5.09],['Needs reconnect','58',3.21],['Failed','14',.78]].map(r=>`<div><div class="rw"><span>${r[0]} <b>${r[1]}</b></span><em>${r[2]}%</em></div><div class="bar2"><i data-w="${r[2]}"></i></div></div>`).join('')}</div></div>
+<div class="cd" data-n="1806"><p class="t">Active accounts · daily average</p><p class="v"><span class="num">0</span></p><div class="pie" data-a="62" data-b="88" data-c="100"></div><div class="lg"><span>● Connected</span><span>● Pending</span><span>● Reconnect</span></div></div>
+<div class="cd" data-n="37"><p class="t">Total repairs</p><p class="v"><span class="num">0</span></p><div class="pie" data-a="58" data-b="82" data-c="100"></div><div class="lg"><span>● Authentication</span><span>● Provider error</span><span>● Expired</span></div></div>`;
+document.querySelectorAll('.pl').forEach(p=>{const L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=L;p.dataset.l=L});
+function animAna(){const cards=[...document.querySelectorAll('.cd')];cards.forEach((c,i)=>{const n=+c.dataset.n,s=c.dataset.s||'',el=c.querySelector('.num'),dec=String(n).includes('.')?2:0,t0=performance.now()+i*90;
+ (function f(t){const k=Math.min(1,Math.max(0,(t-t0)/1100)),e=1-Math.pow(1-k,3);el.textContent=(n*e).toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec})+s;if(k<1)requestAnimationFrame(f)})(performance.now());
+ c.querySelectorAll('.pl').forEach(p=>{p.style.transition='none';p.style.strokeDashoffset=p.dataset.l;p.getBoundingClientRect();p.style.transition=`stroke-dashoffset 1.4s cubic-bezier(.65,0,.25,1) ${i*.09}s`;p.style.strokeDashoffset=0});
+ c.querySelectorAll('.ar').forEach(a=>{a.style.transition='none';a.style.opacity=0;a.getBoundingClientRect();a.style.transition=`opacity .8s ${0.6+i*.09}s`;a.style.opacity=1});
+ c.querySelectorAll('.bar2 i').forEach((b,j)=>{b.style.transition='none';b.style.width=0;b.getBoundingClientRect();b.style.transition=`width 1.1s cubic-bezier(.22,1,.36,1) ${i*.09+j*.07}s`;b.style.width=Math.max(2,b.dataset.w)+'%'});
+ c.querySelectorAll('.pie').forEach(p=>{const A=+p.dataset.a,B=+p.dataset.b,Cc=+p.dataset.c,t1=performance.now()+i*90;(function g(t){const k=Math.min(1,Math.max(0,(t-t1)/1200)),e=1-Math.pow(1-k,3);p.style.setProperty('--a',A*e+'%');p.style.setProperty('--b',B*e+'%');p.style.setProperty('--c',Cc*e+'%');if(k<1)requestAnimationFrame(g)})(performance.now())})})}
+/* nav */
+const URL={cons:'consumption',sites:'parameters',ana:'analytics'};let page='cons';
+function go(p){if(p===page)return;page=p;document.querySelectorAll('.nav a[data-p]').forEach(a=>a.classList.toggle('on',a.dataset.p===p));document.querySelectorAll('.pg').forEach(g=>g.classList.toggle('on',g.id===p));$('#u').textContent='app.datadeck.co/'+URL[p];closeDrw();if(p==='ana')setTimeout(animAna,250)}
+function filt(v){document.querySelectorAll('#ctbl .tr:not(.hd)').forEach(r=>r.classList.toggle('hide',!!v&&r.dataset.p!==v));$('#fprov').classList.toggle('act',!!v);$('#fprovt').textContent=v||'Utility provider'}
+function closeDrw(){$('#drw').classList.remove('on')}
+/* manual */
+function takeOver(){if(manual)return;manual=true;run++;cur.classList.remove('on');const h=$('#hint');h.classList.add('on');setTimeout(()=>h.classList.remove('on'),2600)}
+view.addEventListener('pointerdown',e=>{if(e.isTrusted)takeOver()},true);
+document.querySelectorAll('.nav a[data-p]').forEach(a=>a.addEventListener('click',()=>go(a.dataset.p)));
+$('#fprov').addEventListener('click',e=>{e.stopPropagation();$('#ddp').classList.toggle('on')});
+document.querySelectorAll('#ddp div').forEach(d=>d.addEventListener('click',e=>{e.stopPropagation();$('#ddp').classList.remove('on');filt(d.dataset.v)}));
+$('#clr').addEventListener('click',()=>filt(''));
+document.addEventListener('click',()=>$('#ddp').classList.remove('on'));
+let added=0;
+$('#add').addEventListener('click',()=>{if(!manual)return;['#fn','#fm','#fa','#fc','#fk'].forEach((s,i)=>$(s).textContent=['Austin Warehouse','j.lee@verdant.co','2200 S Lamar Blvd, Austin, TX','Austin','United States'][i]);$('#drw').classList.add('on')});
+$('#sub').addEventListener('click',()=>{if(!manual)return;submit()});
+async function submit(){closeDrw();await sleep(350);const t=$('#stbl .tr.hd');t.insertAdjacentHTML('afterend',srow([String(100+(++added)),$('#fn').textContent||'New site',$('#fa').textContent,$('#fc').textContent,'pe|Pending',$('#fm').textContent],'new'));const n=t.nextElementSibling;n.classList.add('hide');n.getBoundingClientRect();n.classList.remove('hide');const ts=$('#toast');ts.classList.add('on');setTimeout(()=>ts.classList.remove('on'),2200);setTimeout(()=>n.classList.remove('new'),2500)}
+/* demo */
+function stageScale(){return view.getBoundingClientRect().width/view.offsetWidth||1}
+function pos(el){const a=el.getBoundingClientRect(),b=view.getBoundingClientRect(),s=stageScale();return{x:(a.left-b.left)/s,y:(a.top-b.top)/s,w:a.width/s,h:a.height/s}}
+function moveTo(el,fx=.5,fy=.5){const p=pos(el);cur.style.transform=`translate(${p.x+p.w*fx}px,${p.y+p.h*fy}px)`}
+async function click(el){cur.classList.add('dn');el&&el.classList.add('press');await sleep(160);cur.classList.remove('dn');el&&el.classList.remove('press')}
+async function type(el,s,id){el.classList.add('f');for(let i=1;i<=s.length;i++){if(id!==run)return;el.textContent=s.slice(0,i);await sleep(38+Math.random()*30)}el.classList.remove('f')}
+async function demo(id){
+ while(id===run){
+  go('cons');filt('');renderSites();added=0;await sleep(1300);if(id!==run)return;
+  cur.style.transition='none';cur.style.transform='translate(600px,560px)';cur.offsetWidth;cur.style.transition='';cur.classList.add('on');await sleep(60);
+  const fp=$('#fprov');moveTo(fp);await sleep(1000);if(id!==run)return;await click(fp);$('#ddp').classList.add('on');await sleep(600);
+  const hq=$('#ddp div[data-v="Hydro-Québec"]');moveTo(hq,.35);await sleep(850);if(id!==run)return;hq.classList.add('hv');await sleep(200);await click(null);hq.classList.remove('hv');$('#ddp').classList.remove('on');filt('Hydro-Québec');await sleep(2200);if(id!==run)return;
+  const cl=$('#clr');moveTo(cl);await sleep(900);if(id!==run)return;await click(cl);filt('');await sleep(1200);if(id!==run)return;
+  const ns=$('.nav a[data-p="sites"]');moveTo(ns,.4);await sleep(1000);if(id!==run)return;await click(ns);go('sites');await sleep(1300);if(id!==run)return;
+  const ad=$('#add');moveTo(ad);await sleep(1000);if(id!==run)return;await click(ad);['#fn','#fm','#fa','#fc','#fk'].forEach(s=>$(s).textContent='');$('#drw').classList.add('on');await sleep(800);
+  const vals=['Austin Warehouse','j.lee@verdant.co','2200 S Lamar Blvd, Austin, TX','Austin','United States'];
+  for(const [i,s] of ['#fn','#fm','#fa','#fc','#fk'].entries()){const el=$(s);moveTo(el,.3);await sleep(i?520:900);if(id!==run)return;await type(el,vals[i],id);if(id!==run)return}
+  const sb=$('#sub');moveTo(sb);await sleep(900);if(id!==run)return;await click(sb);await submit();await sleep(2600);if(id!==run)return;
+  const na=$('.nav a[data-p="ana"]');moveTo(na,.4);await sleep(1000);if(id!==run)return;await click(na);go('ana');cur.classList.remove('on');await sleep(5200);if(id!==run)return;
+ }
+}
+function fit(){const e=document.documentElement.classList.contains('embed'),m=e?0:40;const s=Math.min((innerWidth-m)/W,(innerHeight-m)/H,1.2);$('#stage').style.transform=`scale(${s})`;$('#stage').style.setProperty('--er',(16/s)+'px')}
+if(window.self!==window.top||/embed/.test(location.search))document.documentElement.classList.add('embed');
+addEventListener('resize',fit);fit();
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(manual)return;if(e.isIntersecting){if(!demo.on){demo.on=1;demo(++run)}}else{demo.on=0;run++;cur.classList.remove('on')}}),{threshold:.2});io.observe($('#stage'));
+</script>
+</body></html>

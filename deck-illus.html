@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deck use-case illustrations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..600&display=swap" rel="stylesheet">
+<style>
+:root{--ease:cubic-bezier(.22,1,.36,1);--pop:cubic-bezier(.3,1.5,.5,1);--ink:#161823;--ink2:#3f3f61}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-optical-sizing:auto;-webkit-font-smoothing:antialiased;background:#faf9f6;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--ink)}
+html.embed body{background:transparent}
+#stage{width:980px;height:870px;flex:none;display:grid;grid-template-columns:640px 1fr;grid-template-rows:412px 1fr;gap:16px;padding:8px 8px 20px;transform-origin:center}
+.card{position:relative;background:#f2f1ed;border-radius:20px;overflow:hidden;box-shadow:0 0 0 1px rgba(60,50,30,.04)}
+.cap{position:absolute;left:24px;top:20px;z-index:3}
+.cap b{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6b6e86}
+.cap span{display:block;font-size:14px;color:var(--ink2);margin-top:4px;letter-spacing:-.006em}
+.art{position:absolute;transform-origin:top left}
+.sh{box-shadow:0 1px 2px rgba(20,22,48,.05),0 8px 22px -10px rgba(20,22,48,.18)}
+.ab{position:absolute}
+/* ---------- energy ---------- */
+#en{grid-column:1;grid-row:1}
+#en .art{left:calc(50% - 205px);top:62px;width:447px;height:327px}
+.chart{left:16px;top:0;width:274px;height:164px;background:#fff;border-radius:8px}
+.chart h4{position:absolute;left:18px;top:12px;font-size:16px;font-weight:500;letter-spacing:-.01em}
+.chart small{position:absolute;left:18px;top:33px;font-size:12px;color:var(--ink2)}
+.chart i{position:absolute;left:18px;font-style:normal;font-size:11px;color:#bdbdbd}
+.chart svg{position:absolute;left:39px;top:49px;width:221px;height:77px;overflow:visible}
+.gauge{left:262px;top:92px;width:128px;height:124px;background:#fff;border-radius:8px;text-align:center;z-index:2}
+.gauge p{font-size:12px;margin-top:13px;color:#3f3f61}
+.gauge svg{position:absolute;left:29px;top:40px;width:70px;height:38px;overflow:visible}
+.gauge b{position:absolute;left:0;right:0;top:88px;font-size:15px;font-weight:500;color:#1a1f36;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.rec{color:#fff;font-size:14px;line-height:19px;letter-spacing:-.01em;border-radius:6px;padding:10px 14px;height:auto!important;display:flex;align-items:center}
+.r1{left:34px;top:192px;width:196px;height:55px;background:#003ab9}
+.r2{left:195px;top:268px;width:206px;height:51px;background:#6235e7}
+.conn{position:absolute;left:138px;top:250px;width:57px;height:47px;overflow:visible}
+.dotar{left:155px;top:283.5px;width:27px;height:27px;border-radius:50%;background:#6235e7;box-shadow:0 0 0 1px #fff;display:grid;place-items:center}
+/* ---------- invoice flow ---------- */
+#iv{grid-column:2;grid-row:1}
+#iv .art{left:50%;top:62px;width:127px;height:329px;transform:translateX(-50%)}
+.pill{position:absolute;height:30px;padding:0 15px;border-radius:32px;color:#fff;font-size:14px;letter-spacing:-.01em;z-index:1;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;white-space:nowrap}
+.vline{position:absolute;left:63.5px;top:28px;width:1px;height:274px;background:#cfd6e4;overflow:hidden}
+.vline i{position:absolute;left:-1px;width:3px;height:40px;border-radius:2px;background:linear-gradient(#166de6,#2ab9d6);top:-40px}
+.node{position:absolute;left:49px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;box-shadow:0 0 0 2px #f2f1ed}
+.node svg{width:9px;height:9px}
+.inv{left:0;top:106px;width:127px;height:131px;background:#fff;border:1px solid #ececec;border-radius:6px}
+.inv .t{position:absolute;left:9px;top:12px;font-size:13px;color:var(--ink2)}
+.inv .lg{z-index:2;position:absolute;left:84px;top:18px;width:28px;height:28px;border-radius:50%;background:#0097d5;display:grid;place-items:center}
+.inv .bx{position:absolute;left:8px;top:35px;width:111px;height:59px;background:#f4f2f2;border-radius:3px}
+.inv .bx b{position:absolute;left:9px;top:18px;font-size:13px;letter-spacing:-.01em;font-weight:500;color:var(--ink2);font-variant-numeric:tabular-nums}
+.inv .bx s{position:absolute;left:9px;top:37px;font-size:10.5px;white-space:nowrap;color:var(--ink2);text-decoration:none}
+.inv u{position:absolute;left:8px;height:6px;border-radius:2px;background:#f4f2f2}
+.pulse{animation:pl 1.2s var(--ease)}
+@keyframes pl{0%{box-shadow:0 0 0 0 rgba(42,185,214,.5)}100%{box-shadow:0 0 0 12px rgba(42,185,214,0)}}
+/* ---------- rewind / stream ---------- */
+#rs{grid-column:1/3;grid-row:2}
+#rs .art{left:calc(50% - 282px);top:60px;width:564px;height:317px}
+.tab{position:absolute;height:34px;border-radius:32px;background:#fff;display:flex;align-items:center;gap:7px;padding:0 16px 0 12px;font-size:14px;font-weight:500;color:#4d4d75}
+.tab svg{width:20px;height:20px}
+.chip2{position:absolute;height:30px;padding:0 15px;border-radius:28px;color:#fff;font-size:14px;letter-spacing:-.01em;z-index:1;display:flex;align-items:center;justify-content:center}
+.hline{position:absolute;left:60px;top:55.5px;width:230px;z-index:0;height:1px;border-radius:0;background:linear-gradient(90deg,#0273e6 0%,#ca1ced 25%,#0273e6 50%,#ca1ced 75%,#0273e6 100%);background-size:200% 100%;animation:gflow 2.6s linear infinite;overflow:hidden}
+@keyframes gflow{from{background-position:0 0}to{background-position:-100% 0}}
+.hline i{display:none;position:absolute;top:-1px;height:3px;width:46px;background:linear-gradient(90deg,#0273e6,#ca1ced);left:-50px}
+.menu{left:0;top:81px;width:180px;height:184px;background:#fff;border:1px solid #d6deea;border-radius:8px;padding-top:4px}
+.menu div{position:relative;height:36px;display:flex;align-items:center;gap:8px;padding-left:12px;font-size:14px;color:var(--ink2);letter-spacing:-.01em}
+.cb{width:14px;height:14px;border-radius:2px;border:1px solid #bdc4da;flex:none;display:grid;place-items:center;transition:background .25s,border-color .25s}
+.cb svg{width:8px;height:6px;opacity:0;transition:opacity .2s}
+.menu div.on .cb{background:#2828df;border-color:#2828df}.menu div.on .cb svg{opacity:1}
+.hi{position:absolute;left:4px;right:4px;height:32px;border-radius:5px;background:#f2f4fb;top:4px;transition:transform .5s var(--ease);z-index:0}
+.menu div>*{position:relative;z-index:1}
+.grid4{left:286px;top:80px;width:272px;height:237px;border:1px solid #ca1ced;border-radius:20px}
+.tile{position:absolute;width:112px;height:64px;background:#fff;border-radius:6px;text-align:center}
+.tile svg{width:18px;height:18px;margin-top:11px}
+.tile p{font-size:14px;margin-top:6px;letter-spacing:-.01em}
+.val{position:absolute;width:112px;height:26px;border-radius:24px;background:#3f3f61;color:#f8f8f8;font-size:12px;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.live{transition:opacity .4s;position:absolute;right:20px;top:20px;display:flex;align-items:center;gap:5px;font-size:11px;color:#ca1ced;font-weight:500;letter-spacing:.04em}
+.live i{width:6px;height:6px;border-radius:50%;background:#ca1ced;animation:lv 1.4s ease-in-out infinite}
+@keyframes lv{50%{opacity:.25}}
+/* entrance helpers */
+.in{opacity:0;transform:translateY(8px) scale(.97);transition:opacity .5s var(--ease),transform .7s var(--pop)}
+.in.on{opacity:1;transform:none}
+</style></head>
+<body>
+<div id="stage">
+ <!-- Energy management -->
+ <div class="card" id="en"><div class="cap"><b>Energy management</b></div>
+  <div class="art">
+   <div class="ab chart sh in" id="e1"><h4>Energy Usage</h4><small>kWh</small><i style="top:68px">20</i><i style="top:90px">15</i><i style="top:112px">10</i><i style="top:134px">5</i>
+    <svg viewBox="0 0 221 77"><defs><linearGradient id="eg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8f2f8"/><stop offset="1" stop-color="#fff"/></linearGradient><clipPath id="ec"><rect id="ecr" x="0" y="-5" width="0" height="90"/></clipPath></defs>
+     <g clip-path="url(#ec)"><path d="M0 76.9L0 36.2L30.4 33.2L88.2 47.8L117.5 42L137 23.1L148.2 42L162.3 28.4L182.6 0L189.1 9.3L194.5 29.5L207.5 35.1L220.5 35.8L220.5 76.9Z" fill="url(#eg)"/>
+     <path d="M0 35.5L30.4 32.9L66.5 41.6L88.6 46.9L117.4 41.6L136.8 23.4L147.8 41.6L161.3 29.1L182.3 0L188.3 9.3L194.1 29.1L206.8 34.4L219.1 35.5" fill="none" stroke="#29b9d6" stroke-width="1.4" stroke-linejoin="round"/></g>
+     <circle id="edot" r="3.2" fill="#fff" stroke="#29b9d6" stroke-width="1.6" cx="0" cy="35.5" opacity="0"/></svg></div>
+   <div class="ab gauge sh in" id="e2"><p>Energy Efficiency</p>
+    <svg viewBox="0 0 70 38"><path d="M4 35A31 31 0 0 1 66 35" fill="none" stroke="#d3f8cf" stroke-width="6" stroke-linecap="round"/><path id="garc" d="M4 35A31 31 0 0 1 66 35" fill="none" stroke="#85d37b" stroke-width="6" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg>
+    <b id="gnum">0.0 %</b></div>
+   <div class="ab rec r1 sh in" id="e3">Reduce non-essential lighting during off-hours</div>
+   <svg class="conn" viewBox="0 0 57 47"><path id="cpath" d="M0 0L0 39Q0 47 8 47L57 47" fill="none" stroke="#6235e7" stroke-width="1.2" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg>
+   <div class="ab rec r2 sh in" id="e5">Install occupancy sensors in low-traffic areas</div>
+   <div class="ab dotar in" id="e4"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" stroke="#f8f8f8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4.5h7M5 1.5l3 3-3 3"/></svg></div>
+  </div></div>
+
+ <!-- Accounts payable -->
+ <div class="card" id="iv"><div class="cap"><b>Accounts payable</b></div>
+  <div class="art">
+   <div class="vline"><i id="flow"></i></div>
+   <div class="pill" style="left:64px;top:-1px;background:#166de6">Utility Provider</div>
+   <div class="node" style="top:50px;background:#166de6"><svg viewBox="0 0 9 9" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 1v7M1.5 5l3 3 3-3"/></svg></div>
+   <div class="ab inv sh" id="inv"><span class="t">Invoice</span><span class="lg"><svg width="16" height="14" viewBox="0 0 40 40"><path fill-rule="evenodd" d="M31.2 27H17C12.9 27 9.4 23.6 9.4 19.4S12.9 11.9 17 11.9H31.2V9.2H17C11.4 9.2 6.8 13.8 6.8 19.4S11.4 29.6 17 29.6H31.2Z" fill="#fff"/><path fill-rule="evenodd" d="M11.4 19.5C11.4 22.7 14 25.3 17.3 25.3H31.2V22.7H17.3C15.5 22.7 14 21.2 14 19.5S15.5 16.2 17.3 16.2H31.2V13.6H17.3C14 13.6 11.4 16.2 11.4 19.5Z" fill="#fff"/><path d="M31.2 18.1H17.2C16.4 18.1 15.8 18.7 15.8 19.4S16.4 20.7 17.2 20.7H31.2Z" fill="#fff"/></svg></span>
+    <span class="bx"><b id="amt">USD 143.00</b><s id="due">Pay By Mar 15, 2025</s></span><u style="top:100px;width:90px"></u><u style="top:110px;width:81px"></u></div>
+   <div class="node" style="top:226px;background:#2ab9d6"><svg viewBox="0 0 9 9" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 1v7M1.5 5l3 3 3-3"/></svg></div>
+   <div class="pill" id="plat" style="left:64px;top:300px;background:#2ab9d6">Platform</div>
+  </div></div>
+
+ <!-- Rewind & Stream -->
+ <div class="card" id="rs"><div class="cap"><b>Rewind &amp; Stream</b></div>
+  <div class="live"><i></i>LIVE</div>
+  <div class="art">
+   <div class="tab" style="left:0;top:0;border:1px solid #f4f2f2"><svg viewBox="0 0 20 20"><path d="M2.5 8.3L12 2L12 18L2.5 11.7A2 2 0 0 1 2.5 8.3Z" fill="#ca1ced" style="mix-blend-mode:multiply"/><path d="M10.1 8.4L20 1L20 19L10.1 11.6A2 2 0 0 1 10.1 8.4Z" fill="#29b9d6" style="mix-blend-mode:multiply"/></svg>Rewind</div>
+   <div class="chip2" style="left:0;top:41px;background:#0273e6">Utility History</div>
+   <div class="hline"><i id="hflow"></i></div>
+   <div class="tab" style="left:284px;top:0"><svg viewBox="0 0 20 20"><circle cx="14" cy="10" r="6" fill="#f5bc20"/><path d="M9.5 8.3L0 2L0 18L9.5 11.7A2 2 0 0 0 9.5 8.3Z" fill="#ca1ced" style="mix-blend-mode:multiply"/></svg>Stream</div>
+   <div class="chip2" style="left:284px;top:41px;background:#ca1ced">Ongoing Usage</div>
+   <div class="ab menu sh" id="menu"><span class="hi" id="hi"></span></div>
+   <div class="ab grid4">
+    <div class="tile sh" style="left:15px;top:15px"><svg viewBox="0 0 18 18" fill="#000"><path d="M6 1v4M12 1v4" stroke="#000" stroke-width="1.6" stroke-linecap="round"/><path d="M3.5 5h11v3a5.5 5.5 0 0 1-11 0z"/><path d="M9 13.5V17" stroke="#000" stroke-width="1.6" stroke-linecap="round"/></svg><p>Electricity</p></div>
+    <div class="val" style="left:15px;top:83px" id="v0"></div>
+    <div class="tile sh" style="left:143px;top:15px"><svg viewBox="0 0 18 18" fill="#000"><path d="M2.5 4h13v1.6h-13z"/><path d="M7 2h4v1.6H7z"/><path d="M4 6.5h10l-.9 10H4.9z"/></svg><p>Waste</p></div>
+    <div class="val" style="left:143px;top:83px" id="v1"></div>
+    <div class="tile sh" style="left:15px;top:125px"><svg viewBox="0 0 18 18" fill="#000"><path d="M3 5h6V3h2v2h3a2 2 0 0 1 2 2v2h-3V8H3z"/><path d="M14.5 12.5c0 1-.7 1.8-1.5 1.8s-1.5-.8-1.5-1.8c0-1 1.5-2.6 1.5-2.6s1.5 1.6 1.5 2.6z"/></svg><p>Water</p></div>
+    <div class="val" style="left:15px;top:193px" id="v2"></div>
+    <div class="tile sh" style="left:143px;top:125px"><svg viewBox="0 0 18 18" fill="#000"><path d="M9 1c.8 3.5 5.5 5.2 5.5 9.6A5.5 5.5 0 0 1 3.5 10.6c0-2.6 1.6-4 2.5-5.6.6 1.8 1.5 2.4 2 2.6C8 5.2 8.4 3 9 1z"/></svg><p>Gas</p></div>
+    <div class="val" style="left:143px;top:193px" id="v3"></div>
+   </div>
+  </div></div>
+</div>
+<script>
+const $=s=>document.querySelector(s);const sleep=ms=>new Promise(r=>setTimeout(r,ms));let run=0;
+const ease=t=>1-Math.pow(1-t,3);
+function tween(ms,fn,id){return new Promise(res=>{const t0=performance.now();(function f(n){if(id!==run)return res();const k=Math.min(1,(n-t0)/ms);fn(ease(k),k);k<1?requestAnimationFrame(f):res()})(performance.now())})}
+/* energy */
+const LP=[[0,35.5],[30.4,32.9],[66.5,41.6],[88.6,46.9],[117.4,41.6],[136.8,23.4],[147.8,41.6],[161.3,29.1],[182.3,0],[188.3,9.3],[194.1,29.1],[206.8,34.4],[219.1,35.5]];
+function yAt(x){for(let i=1;i<LP.length;i++){if(x<=LP[i][0]){const[a,b]=[LP[i-1],LP[i]];return a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0])}}return 35.5}
+async function energy(id){
+ const one=s=>$(s);
+ while(id===run){
+  ['#e2','#e3','#e4','#e5'].forEach(s=>one(s).classList.remove('on'));one('#e1').classList.add('on');
+  $('#ecr').setAttribute('width',0);$('#garc').style.strokeDashoffset=100;$('#gnum').textContent='0.0 %';$('#cpath').style.transition='none';$('#cpath').style.strokeDashoffset=100;$('#edot').setAttribute('opacity',0);
+  await sleep(900);if(id!==run)return;
+  // 1. the line draws first
+  $('#edot').setAttribute('opacity',1);
+  await tween(2200,(e)=>{const x=221*e;$('#ecr').setAttribute('width',x);$('#edot').setAttribute('cx',Math.min(219,x));$('#edot').setAttribute('cy',yAt(Math.min(219,x)))},id);if(id!==run)return;
+  await sleep(600);
+  // 2. then the frames with text appear
+  $('#e2').classList.add('on');await sleep(300);
+  await tween(1200,(e)=>{$('#garc').style.strokeDashoffset=100-62.7*e;$('#gnum').textContent=(62.7*e).toFixed(1)+' %'},id);if(id!==run)return;
+  await sleep(500);$('#e3').classList.add('on');await sleep(700);
+  $('#cpath').style.transition='stroke-dashoffset .8s cubic-bezier(.65,0,.25,1)';$('#cpath').style.strokeDashoffset=0;await sleep(650);
+  $('#e4').classList.add('on');await sleep(280);$('#e5').classList.add('on');
+  await sleep(4200);if(id!==run)return;
+  ['#e5','#e4','#e3','#e2'].forEach((s,i)=>setTimeout(()=>one(s).classList.remove('on'),i*80));$('#edot').setAttribute('opacity',0);
+  await tween(700,(e)=>{$('#ecr').setAttribute('width',221*(1-e))},id);await sleep(400);
+ }
+}
+/* invoices: appear gently, rest, then glide down into the platform */
+const INV=[['USD 143.00','Pay By Mar 15, 2025'],['USD 98.40','Pay By Apr 02, 2025'],['USD 211.75','Pay By Apr 18, 2025']];
+async function invoices(id){let k=0;const inv=$('#inv'),fl=$('#flow'),p=$('#plat');
+ while(id===run){
+  const[a,d]=INV[k%3];k++;$('#amt').textContent=a;$('#due').textContent=d;
+  inv.style.transition='none';inv.style.opacity=0;inv.style.transform='translateY(-22px) scale(.96)';inv.style.filter='blur(4px)';inv.getBoundingClientRect();
+  fl.style.transition='none';fl.style.top='-40px';fl.getBoundingClientRect();fl.style.transition='top 1.2s cubic-bezier(.45,0,.25,1)';fl.style.top='80px';await sleep(900);if(id!==run)return;
+  inv.style.transition='opacity 1.2s cubic-bezier(.22,1,.36,1),transform 1.6s cubic-bezier(.22,1,.36,1),filter 1.2s ease';inv.style.opacity=1;inv.style.transform='none';inv.style.filter='none';
+  await sleep(3600);if(id!==run)return;
+  inv.style.transition='transform 2.4s cubic-bezier(.55,0,.35,1),opacity 2s ease .3s';inv.style.transform='translateY(120px)';inv.style.opacity=0;
+  fl.style.transition='none';fl.style.top='200px';fl.getBoundingClientRect();fl.style.transition='top 1.8s cubic-bezier(.55,0,.35,1)';fl.style.top='300px';
+  await sleep(2000);p.classList.remove('pulse');p.getBoundingClientRect();p.classList.add('pulse');await sleep(1300);
+ }
+}
+/* Rewind feeds Stream: pick a period, history backfills the usage, then it keeps streaming live */
+const OPTS=['Custom Date Range','Last month','Last quarter','Last year','All times'];
+$('#menu').insertAdjacentHTML('beforeend',OPTS.map(o=>`<div><span class="cb"><svg viewBox="0 0 8 6" fill="none" stroke="#fafafa" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3.2 3 5 7 1"/></svg></span><span>${o}</span></div>`).join(''));
+
+const PER={1:[16408,7,2.9,4660],2:[49223,21,8.8,13980],3:[196892,85,35,56000],4:[612340,262,108.6,174200]};
+const U=[' kWh',' tonnes','M gallons',' t'];const RATE=[23,.02,.003,4];
+let cur=[0,0,0,0],liveOn=false;
+function show(i){const x=cur[i];$('#v'+i).textContent=(i===2?x.toFixed(2):Math.round(x).toLocaleString('en-US'))+U[i]}
+async function stream(id){const items=[...document.querySelectorAll('#menu div')],hi=$('#hi'),hf=$('#hflow'),lv=$('.live');
+ (function tick(){if(id!==run)return;if(liveOn){cur=cur.map((v,i)=>v+RATE[i]*(.6+Math.random()*.8));cur.forEach((_,i)=>show(i))}setTimeout(tick,180)})();
+ while(id===run){
+  for(const s of [3,1,4]){
+   if(id!==run)return;liveOn=false;lv.style.opacity=.35;
+   hi.style.transform=`translateY(${s*36}px)`;await sleep(650);items.forEach((it,j)=>it.classList.toggle('on',j===s));await sleep(350);
+   hf.style.transition='none';hf.style.left='-50px';hf.getBoundingClientRect();hf.style.transition='left 1s cubic-bezier(.65,0,.25,1)';hf.style.left='230px';await sleep(900);if(id!==run)return;
+   const from=[...cur],to=PER[s];
+   await tween(1300,(e)=>{cur=from.map((f,i)=>f+(to[i]-f)*e);cur.forEach((_,i)=>show(i))},id);if(id!==run)return;
+   liveOn=true;lv.style.opacity=1;await sleep(3200);
+  }
+ }
+}
+function fit(){const e=document.documentElement.classList.contains('embed'),m=e?0:40,s=Math.min((innerWidth-m)/980,(innerHeight-m)/870,1.3);$('#stage').style.transform=`scale(${s})`}
+if(window.self!==window.top||/embed/.test(location.search))document.documentElement.classList.add('embed');
+addEventListener('resize',fit);fit();
+new IntersectionObserver(es=>es.forEach(e=>{run++;if(e.isIntersecting){const id=run;energy(id);invoices(id);stream(id)}}),{threshold:.2}).observe($('#stage'));
+</script>
+</body></html>
