@@ -13,7 +13,7 @@ html.embed body{background:transparent}
 #wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
 #stage{position:relative;width:380px;height:680px;flex:none;border-radius:24px;background:#fff;overflow:hidden;transform-origin:center;
   box-shadow:0 0 0 1px rgba(18,19,49,.06),0 24px 60px -18px rgba(18,19,49,.28)}
-html.embed #stage{box-shadow:0 0 0 1px rgba(18,19,49,.06)}
+html.embed #stage{box-shadow:0 0 0 1px rgba(18,19,49,.09)}
 .top{position:absolute;left:0;right:0;top:0;height:58px;display:flex;align-items:center;justify-content:center;z-index:5;background:#fff}
 .top .bk,.top .x{position:absolute;top:19px;width:20px;height:20px;color:#a0a3b8;transition:opacity .35s var(--ease),transform .35s var(--ease)}
 .top .bk.off{opacity:0;transform:translateX(4px)}
@@ -169,7 +169,7 @@ const d=document.documentElement;if(window.self!==window.top)d.classList.add('em
 document.querySelectorAll('[data-i]').forEach(e=>{e.innerHTML=ICONS[e.dataset.i]||''});
 document.querySelectorAll('.scr').forEach(sc=>[...sc.children].forEach((ch,i)=>{if(!ch.classList.contains('foot')&&!ch.classList.contains('bottom')&&!ch.classList.contains('legal')){ch.classList.add('st');ch.style.setProperty('--i',i)}}));
 const $=id=>document.getElementById(id),stage=$('stage');
-function fit(){const k=Math.min(1.25,innerWidth/380,innerHeight/680)*(d.classList.contains('embed')?1:.94);stage.style.transform='scale('+k+')'}
+function fit(){const e=d.classList.contains('embed'),g=e?6:0;const k=Math.min(1.25,(innerWidth-g)/380,(innerHeight-g)/680)*(e?1:.94);stage.style.transform='scale('+k+')'}
 addEventListener('resize',fit);fit();
 
 const P=[['pge','Pacific Gas and Electric','Electricity, Gas'],['fpl','Florida Power & Light','Electricity'],['sce','Southern California Edison','Electricity, Gas'],['duke','Duke Energy','Electricity, Gas'],['xcel','Xcel Energy','Electricity, Gas'],['coned','Con Edison','Electricity, Gas']];
