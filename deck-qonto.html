@@ -96,6 +96,18 @@ h2{font-size:18px;line-height:1.3;font-weight:600;letter-spacing:-.02em;text-wra
 .ms i{height:22px;border-radius:5px;background:#e9ebf1;display:grid;place-items:center;font-style:normal;font-size:9.5px;color:#9a9db3;transition:background .3s,color .3s}
 .ms i.on{background:#3b3bdb;color:#fff}
 .acts{display:flex;gap:10px;margin-top:16px}
+/* imported rows */
+#nr{position:absolute;left:190px;top:209px;width:590px;pointer-events:none}
+.nr{height:0;overflow:hidden;background:#fff;transition:height .55s var(--ease)}
+.nr.on{height:51px}
+.nr>div{height:51px;display:flex;align-items:center;border-bottom:1px solid #eceef1;padding-left:38px;font-size:12.5px;color:#2b2d42;transition:background 1.6s ease;background:#efeffd}
+.nr.set>div{background:#fff}
+.nr .ni{width:24px;height:24px;border-radius:7px;background:#f3f4f7;display:grid;place-items:center;margin-right:13px}
+.nr .ni svg{width:15px;height:15px}
+.nr .nm{width:117px;font-weight:600;line-height:15px}.nr .nm small{display:block;font-weight:400;color:#8a8da6;font-size:11px}
+.nr .ty{width:143px;color:#4b4e6b}.nr .dt2{width:120px;color:#4b4e6b}.nr .am{width:96px;text-align:right;font-weight:600}
+.nr .cl{margin-left:12px;width:18px;height:18px;border-radius:5px;background:#3b3bdb;display:grid;place-items:center;transform:scale(0);transition:transform .5s cubic-bezier(.3,1.6,.5,1) .5s}
+.nr.on .cl{transform:none}
 /* toast */
 #toast{position:absolute;left:50%;bottom:26px;transform:translate(-50%,16px);display:flex;align-items:center;gap:10px;height:44px;padding:0 18px 0 12px;border-radius:12px;background:#121331;color:#fff;font-size:13px;letter-spacing:-.005em;opacity:0;transition:opacity .4s var(--ease),transform .55s var(--ease);box-shadow:0 14px 30px -14px rgba(18,19,49,.5)}
 #toast.on{opacity:1;transform:translate(-50%,0)}
@@ -161,7 +173,8 @@ h2{font-size:18px;line-height:1.3;font-weight:600;letter-spacing:-.02em;text-wra
    </section>
    <div class="pw">Powered by <span data-l="deck"></span></div>
   </div>
-  <div id="toast"><i><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5 4 7.5 10 1.5" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></i>AT&amp;T invoices imported<small>· provider session closed</small></div>
+  <div id="nr"></div>
+  <div id="toast"><i><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5 4 7.5 10 1.5" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></i>12 AT&amp;T invoices imported<small>· provider session closed</small></div>
  </div>
  <div id="cur"><svg viewBox="0 0 18 22"><path d="M2 1.5v16.2l4.3-4 2.9 6.6 2.9-1.3-2.9-6.4h6z" fill="#121331" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
 </div></div></div>
@@ -173,6 +186,10 @@ const QL='<svg class="ql" viewBox="-28 -28 56 56"><circle r="28" fill="#141414"/
 document.querySelectorAll('[data-l]').forEach(e=>{e.innerHTML=L[e.dataset.l]||''});
 document.querySelectorAll('.scr').forEach(s=>[...s.children].forEach((c,i)=>c.style.setProperty('--i',i)));
 const $=id=>document.getElementById(id),stage=$('stage'),cur=$('cur');
+const NR=[['Dec 05, 2025','- 84.20 EUR'],['Nov 05, 2025','- 81.95 EUR'],['Oct 05, 2025','- 86.40 EUR']];
+$('nr').innerHTML=NR.map(r=>`<div class="nr"><div><span class="ni" data-l="att"></span><span class="nm">AT&amp;T<small>Invoice attached</small></span><span class="ty">Direct debit</span><span class="dt2">${r[0]}</span><span class="am">${r[1]}</span><span class="cl"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><path d="M10.5 5.5 6 10a1.4 1.4 0 0 0 2 2l5-5a2.8 2.8 0 0 0-4-4L3.8 8.2a4.2 4.2 0 0 0 6 6l4-4"/></svg></span></div></div>`).join('');
+document.querySelectorAll('#nr [data-l]').forEach(e=>{e.innerHTML=L[e.dataset.l]});
+
 const ck='<svg width="9" height="7" viewBox="0 0 11 9" fill="none"><path d="M1 4.5 4 7.5 10 1.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 $('ms').innerHTML='JFMAMJJASOND'.split('').map(m=>`<i>${m}</i>`).join('');
 for(let i=0;i<8;i++)$('pd').appendChild(document.createElement('i'));
@@ -188,7 +205,7 @@ async function click(el,id){moveTo(el);await wait(1050);if(id!==run)return;cur.c
 async function type(el,str,ms,id,mask){let s='';for(const ch of str){if(id!==run)return;s+=ch;el.innerHTML=(mask?'•'.repeat(s.length):s)+'<i class="caret"></i>';await wait(ms)}el.innerHTML=mask?'•'.repeat(s.length):s}
 function reset(){
  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on','out'));curS=null;
- $('md').classList.remove('on');$('ov').classList.remove('on');$('toast').classList.remove('on');
+ $('md').classList.remove('on');$('ov').classList.remove('on');$('toast').classList.remove('on');document.querySelectorAll('.nr').forEach(r=>r.classList.remove('on','set'));
  $('agree').classList.remove('on');$('b0').className='btn dis';$('b0').innerHTML='Continue';$('lg').innerHTML='';$('pwd').innerHTML='';$('b1').innerHTML='Continue';
  $('s4').classList.remove('done');document.querySelectorAll('.pre span,.ms i').forEach(o=>o.classList.remove('on'));
  $('d1').classList.remove('hl');$('d2').classList.remove('hl');$('d1').querySelector('em').textContent='Select date';$('d2').querySelector('em').textContent='Select date';$('b5').innerHTML='Continue with selection';$('b5').className='btn dis';
@@ -219,7 +236,8 @@ async function loop(id){
  $('b5').className='btn';
  await wait(600);await click($('b5'),id);if(id!==run)return;$('b5').innerHTML='<span class="bd"><i></i><i></i><i></i></span>';await wait(1100);if(id!==run)return;
  $('md').classList.remove('on');$('ov').classList.remove('on');cur.classList.remove('on');await wait(450);
- $('toast').classList.add('on');await wait(3200);if(id!==run)return;
+ const rows=[...document.querySelectorAll('.nr')];for(const r of rows){r.classList.add('on');await wait(260)}
+ $('toast').classList.add('on');await wait(900);rows.forEach(r=>r.classList.add('set'));await wait(3600);if(id!==run)return;
  $('toast').classList.remove('on');await wait(700);if(id!==run)return;
  loop(id);
 }
