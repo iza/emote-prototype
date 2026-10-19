@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deck cover</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
+<style>
+/* Deck design system tokens (Figma: Style guidelines – product) */
+:root{
+ --n0:#FFFFFF;--n100:#F8F8F8;--n200:#F4F2F2;--n300:#B2C7D7;--n400:#B2BCD1;--n500:#9D9DBA;--n600:#4D4D75;--n700:#3F3F61;--n800:#161823;--n900:#0D0B2E;
+ --blue:#0273E6;--magenta:#DB5BFF;--cyan:#29B9D6;
+ --ease:cubic-bezier(.22,1,.36,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:Inter,-apple-system,sans-serif;font-feature-settings:'cv11','ss03';-webkit-font-smoothing:antialiased;background:#faf9f6;overflow:hidden}
+html.embed body{background:transparent}
+#wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{position:relative;width:1280px;height:800px;flex:none;transform-origin:center;border-radius:20px;overflow:hidden;background:#2b2c55}
+html.embed #stage{border-radius:0}
+video,.poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%}
+.shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(13,11,46,.28) 0%,rgba(13,11,46,0) 46%)}
+.card{position:absolute;background:rgba(255,255,255,.86);backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);border-radius:14px;box-shadow:0 0 0 1px rgba(255,255,255,.55),0 18px 40px -22px rgba(13,11,46,.55);color:var(--n800)}
+/* overline */
+.ov{position:absolute;left:64px;top:56px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.88)}
+.ov .lv{display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 12px;border-radius:14px;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);letter-spacing:.02em;text-transform:none;font-size:13px;font-variant-numeric:tabular-nums}
+.lv i{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 0 rgba(74,222,128,.6);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+/* total */
+.tot{left:64px;bottom:64px;padding:22px 26px 20px;min-width:330px}
+.tot small{display:block;font-size:14px;line-height:20px;color:var(--n600)}
+.tot strong{display:block;font-size:52px;line-height:1.1;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin-top:4px}
+.tot strong span{font-size:24px;letter-spacing:-.02em;color:var(--n600);margin-left:6px;font-weight:500}
+.spark{display:block;margin-top:14px;width:100%;height:36px}
+/* readings: card · line · ring on the window */
+.rd{position:absolute;display:flex;align-items:center;transform:translate(-100%,-50%);opacity:0;transition:opacity .8s var(--ease)}
+.rd.on{opacity:1}
+.rd.r{flex-direction:row-reverse;transform:translate(0,-50%)}.rd.r .ring{margin-right:0;margin-left:-5px}
+.rd .ln{height:1.5px;width:var(--w);background:var(--c)}
+.rd .ring{width:10px;height:10px;margin-right:-5px;border-radius:50%;background:var(--c);transform:scale(0);transition:transform .7s cubic-bezier(.3,1.6,.5,1)}
+.rd.on .ring{transform:none}
+.rd .card{position:relative;display:flex;align-items:center;gap:12px;padding:10px 14px 10px 12px;font-size:14px;color:var(--n600)}
+.rd .card i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.rd .card b{color:var(--n800);font-size:17px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;min-width:74px;text-align:right}
+/* toast */
+.toast{position:absolute;right:48px;bottom:56px;display:flex;align-items:center;gap:12px;height:52px;padding:0 20px 0 12px;border-radius:14px;background:var(--n900);color:#fff;font-size:14px;box-shadow:0 18px 40px -16px rgba(0,0,0,.55);opacity:0;transform:translateY(14px);transition:opacity .45s var(--ease),transform .6s var(--ease)}
+.toast.on{opacity:1;transform:none}
+.toast .ic{width:28px;height:28px;border-radius:50%;background:var(--blue);display:grid;place-items:center}
+.toast small{color:var(--n500);font-size:13px;margin-left:2px}
+/* status */
+</style></head>
+<body>
+<div id="wrap"><div id="stage">
+ <img class="poster" src="deck-tl-poster.jpg" alt="">
+ <video id="v" muted playsinline loop preload="none" poster="deck-tl-poster.jpg" aria-label="Timelapse of an office tower from dusk to night"></video>
+ <div class="shade"></div>
+ <div class="ov">Hudson Tower · New York <span class="lv"><i></i><span id="clk">18:00</span></span></div>
+
+ <div class="toast" id="toast"><span class="ic"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5 6.5 11.5 12.5 4.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Con Edison statements synced<small>· 1,284 accounts</small></div>
+
+ <div class="rd" style="left:628px;top:297px;--rw:36px;--rh:46px;--w:150px;--c:var(--cyan)"><span class="card"><i></i>Unit 2104<b data-k="763">0 kWh</b></span><span class="ln"></span><span class="ring"></span></div>
+ <div class="rd" style="left:712px;top:451px;--rw:40px;--rh:48px;--w:120px;--c:var(--magenta)"><span class="card"><i></i>Unit 1702<b data-k="985">0 kWh</b></span><span class="ln"></span><span class="ring"></span></div>
+ <div class="rd r" style="left:611px;top:604px;--rw:40px;--rh:54px;--w:90px;--c:var(--blue)"><span class="card"><i></i>Unit 1305<b data-k="653">0 kWh</b></span><span class="ln"></span><span class="ring"></span></div>
+
+ <div class="card tot"><small>Today, whole building</small><strong><em id="total" style="font-style:normal">0</em><span>kWh</span></strong>
+  <svg class="spark" viewBox="0 0 300 36" preserveAspectRatio="none"><defs><linearGradient id="sg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#0273E6" stop-opacity=".22"/><stop offset="1" stop-color="#0273E6" stop-opacity="0"/></linearGradient></defs><path id="sa" fill="url(#sg)"/><path id="sl" fill="none" stroke="#0273E6" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+</div></div>
+<script>
+(function(){
+const $=id=>document.getElementById(id),stage=$('stage'),v=$('v');
+const W=1280,H=800;
+if(window.self!==window.top||/embed/.test(location.search))document.documentElement.classList.add('embed');
+function fit(){const e=document.documentElement.classList.contains('embed'),m=e?0:40;const s=Math.min((innerWidth-m)/W,(innerHeight-m)/H);stage.style.transform=`scale(${s})`;stage.style.setProperty('--er',(20/s)+'px')}
+addEventListener('resize',fit);fit();
+// pick resolution
+const big=(innerWidth*(devicePixelRatio||1))>1500;
+v.src=big?'deck-tl-2560.mp4':'deck-tl-1280.mp4';
+// sparkline points (mock hourly profile)
+const prof=[.30,.34,.42,.55,.68,.80,.86,.82,.74,.62,.50,.42,.36,.33,.31,.32,.36,.44,.52,.58,.60,.56,.48,.40];
+const TOTAL=28140,KW=[...document.querySelectorAll('[data-k]')];
+let tOn=false;function frame(p){const want=p>.5&&p<.72;if(want!==tOn){tOn=want;$('toast').classList.toggle('on',want)} // p = 0..1 through the loop
+ const mins=(18*60+Math.round(p*12*60))%(24*60);$('clk').textContent=String(Math.floor(mins/60)).padStart(2,'0')+':'+String(mins%60).padStart(2,'0');
+ const k=.35+.65*p;$('total').textContent=Math.round(TOTAL*k).toLocaleString('en-US');
+ KW.forEach(e=>e.textContent=Math.round(+e.dataset.k*k)+' kWh');
+ const n=Math.max(2,Math.round(prof.length*(.35+.65*p)));const pts=prof.slice(0,n).map((y,i)=>[i/(prof.length-1)*300,34-y*30]);
+ const d='M'+pts.map(q=>q.map(x=>x.toFixed(1)).join(' ')).join(' L');$('sl').setAttribute('d',d);$('sa').setAttribute('d',d+` L${pts[pts.length-1][0].toFixed(1)} 36 L0 36 Z`);
+}
+let raf=0;const T0=performance.now();function tick(){if(v.duration&&!v.paused)frame((v.currentTime%v.duration)/v.duration);else frame(((performance.now()-T0)/12317)%1);raf=requestAnimationFrame(tick)}
+frame(0);
+let shown=false;
+function reveal(){if(shown)return;shown=true;document.querySelectorAll('.rd').forEach((r,i)=>setTimeout(()=>r.classList.add('on'),500+i*220))}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){v.preload='auto';const p=v.play();if(p)p.catch(()=>{});reveal();cancelAnimationFrame(raf);tick()}else{v.pause();cancelAnimationFrame(raf)}}),{threshold:.1});
+io.observe(stage);
+v.addEventListener('playing',()=>document.querySelector('.poster').style.opacity=0);
+})();
+</script>
+</body></html>
