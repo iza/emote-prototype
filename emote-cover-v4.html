@@ -1,12 +1,13 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>emoteCare cover</title><style>
-@font-face{font-family:P;font-weight:400;src:url(a-0e95e60d8e.ttf)}
-@font-face{font-family:P;font-weight:500;src:url(a-517a82839e.ttf)}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>emoteCare cover</title><script>if(window.self!==window.top)document.documentElement.classList.add('wait')</script><link rel="preload" as="image" href="cv01.jpg" fetchpriority="high"><link rel="preload" as="image" href="cv02.jpg"><link rel="preload" as="font" type="font/ttf" href="a-0e95e60d8e.ttf" crossorigin><link rel="preload" as="font" type="font/ttf" href="a-517a82839e.ttf" crossorigin><style>
+@font-face{font-family:P;font-weight:400;src:url(a-0e95e60d8e.ttf);font-display:swap}
+@font-face{font-family:P;font-weight:500;src:url(a-517a82839e.ttf);font-display:swap}
 *{box-sizing:border-box;margin:0}html,body{width:100%;height:100%;overflow:hidden}
 body{background:#e4dccf;font-family:P,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 body::before{content:"";position:absolute;inset:0;background:radial-gradient(70% 80% at 50% 48%,#eee8de 0%,#e4dccf 58%,#d6cbba 100%)}
 body.sage{background:#dbe2d2}body.sage::before{background:radial-gradient(70% 80% at 50% 48%,#e8ede1 0%,#dbe2d2 58%,#c9d3be 100%)}
 body.lime{background:#e3eac8}body.lime::before{background:radial-gradient(70% 80% at 50% 48%,#eef2da 0%,#e3eac8 58%,#d2dcae 100%)}
 body.dark{background:#1f2321}body.dark::before{background:radial-gradient(70% 80% at 50% 48%,#2c312e 0%,#212523 60%,#181b1a 100%)}
+html.wait body{background:transparent}html.wait body::before,html.wait #stage{opacity:0}body::before,#stage{transition:opacity .35s ease}
 #stage{position:absolute;left:0;top:0;width:1600px;height:1000px;transform-origin:0 0}
 .card{position:absolute;left:800px;top:500px;width:360px;height:682px;margin:-341px 0 0 -180px;border-radius:16px;overflow:hidden;background:#fff;color:#262626;display:flex;flex-direction:column;
  box-shadow:0 2px 4px rgba(60,45,30,.10),0 18px 40px rgba(60,45,30,.16);transition:transform .75s cubic-bezier(.3,.7,.2,1),opacity .6s ease;will-change:transform}
@@ -71,6 +72,7 @@ svg{width:16px;height:16px;flex:none}.bd{padding:16px 24px 0;display:flex;flex-d
 <div class="mt"><div class="two"><span>Age: 38</span><span>Gender: Female</span></div><div>Speaks: English, Mandarin</div><div>Experience: 9 years</div></div><span class="lk">See profile</span></div>
 <div class="sl"><div style="flex:1"><div class="am"><b>£55</b><i>per session</i></div><span class="lk" style="height:28px">Concessions available</span></div><span class="bk">Book now</span></div></article></div>
 <script>
+(function(){if(window.self===window.top)return;const h=document.documentElement;const im=new Image();im.src='cv01.jpg';const a=im.decode?im.decode().catch(()=>{}):new Promise(r=>{im.onload=im.onerror=r});const f=document.fonts?document.fonts.load('500 16px P').then(()=>document.fonts.load('400 16px P')).catch(()=>{}):Promise.resolve();const go=()=>h.classList.remove('wait');Promise.all([a,f]).then(go);setTimeout(go,4000)})();
 const q=new URLSearchParams(location.search);if(q.get('bg'))document.body.classList.add(q.get('bg'));
 const stage=document.getElementById('stage');
 function fit(){const s=Math.max(innerWidth/1600,innerHeight/1000);const s2=Math.min(s,innerHeight/1000*1.0);stage.style.transform=`translate(${(innerWidth-1600*s2)/2}px,${(innerHeight-1000*s2)/2}px) scale(${s2})`}
