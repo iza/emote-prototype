@@ -2,6 +2,8 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Deck cover</title>
+<script>if(window.self!==window.top||/embed/.test(location.search))document.documentElement.classList.add('wait')</script>
+<link rel="preload" as="image" href="deck-tl-poster.webp" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
 <style>
@@ -17,6 +19,7 @@ html.embed body{background:transparent}
 #wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
 #stage{position:relative;width:1280px;height:800px;flex:none;transform-origin:center;border-radius:20px;overflow:hidden;background:#2b2c55}
 html.embed #stage{border-radius:0}
+html.wait #stage{opacity:0}#stage{transition:opacity .35s ease}
 video,.poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%}
 .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(13,11,46,.28) 0%,rgba(13,11,46,0) 46%)}
 .card{position:absolute;background:rgba(255,255,255,.86);backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);border-radius:14px;box-shadow:0 0 0 1px rgba(255,255,255,.55),0 18px 40px -22px rgba(13,11,46,.55);color:var(--n800)}
@@ -50,8 +53,8 @@ video,.poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
 </style></head>
 <body>
 <div id="wrap"><div id="stage">
- <img class="poster" src="deck-tl-poster.jpg" alt="">
- <video id="v" muted playsinline loop preload="none" poster="deck-tl-poster.jpg" aria-label="Timelapse of an office tower from dusk to night"></video>
+ <img class="poster" src="deck-tl-poster.webp" alt="" fetchpriority="high">
+ <video id="v" muted playsinline loop autoplay preload="auto" poster="deck-tl-poster.webp" aria-label="Timelapse of an office tower from dusk to night"></video>
  <div class="shade"></div>
  <div class="ov">Hudson Tower · New York <span class="lv"><i></i><span id="clk">18:00</span></span></div>
 
@@ -68,12 +71,13 @@ video,.poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
 (function(){
 const $=id=>document.getElementById(id),stage=$('stage'),v=$('v');
 const W=1280,H=800;
+{const h=document.documentElement,im=document.querySelector('.poster');const a=im.decode?im.decode().catch(()=>{}):Promise.resolve();const f=document.fonts?Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,2500))]):Promise.resolve();const go=()=>h.classList.remove('wait');Promise.all([a,f]).then(go);setTimeout(go,4000)}
 if(window.self!==window.top||/embed/.test(location.search))document.documentElement.classList.add('embed');
 function fit(){const e=document.documentElement.classList.contains('embed'),m=e?0:40;const s=Math.min((innerWidth-m)/W,(innerHeight-m)/H);stage.style.transform=`scale(${s})`;stage.style.setProperty('--er',(20/s)+'px')}
 addEventListener('resize',fit);fit();
 // pick resolution
 const big=(innerWidth*(devicePixelRatio||1))>1500;
-v.src=big?'deck-tl-2560.mp4':'deck-tl-1280.mp4';
+v.src=big?'deck-tl-1920.mp4':'deck-tl-1280.mp4';const pl=v.play();if(pl)pl.catch(()=>{});
 // sparkline points (mock hourly profile)
 const prof=[.30,.34,.42,.55,.68,.80,.86,.82,.74,.62,.50,.42,.36,.33,.31,.32,.36,.44,.52,.58,.60,.56,.48,.40];
 const TOTAL=28140,KW=[...document.querySelectorAll('[data-k]')];
@@ -87,7 +91,7 @@ let tOn=false;function frame(p){const want=p>.5&&p<.72;if(want!==tOn){tOn=want;$
 let raf=0;const T0=performance.now();function tick(){if(v.duration&&!v.paused)frame((v.currentTime%v.duration)/v.duration);else frame(((performance.now()-T0)/12317)%1);raf=requestAnimationFrame(tick)}
 frame(0);
 let shown=false;
-function reveal(){if(shown)return;shown=true;document.querySelectorAll('.rd').forEach((r,i)=>setTimeout(()=>r.classList.add('on'),500+i*220))}
+function reveal(){if(shown)return;shown=true;document.querySelectorAll('.rd').forEach((r,i)=>setTimeout(()=>r.classList.add('on'),120+i*120))}
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){v.preload='auto';const p=v.play();if(p)p.catch(()=>{});reveal();cancelAnimationFrame(raf);tick()}else{v.pause();cancelAnimationFrame(raf)}}),{threshold:.1});
 io.observe(stage);
 v.addEventListener('playing',()=>document.querySelector('.poster').style.opacity=0);
