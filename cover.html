@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WInvest Cover</title>
+<script>if(window.self!==window.top)document.documentElement.classList.add("wait")</script>
+<link rel="preload" as="image" href="a-25f8ef1c39.jpg" fetchpriority="high"><link rel="preload" as="image" href="a-588ebf115f.jpg"><link rel="preload" as="image" href="a-af88045b5e.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -15,6 +17,7 @@ html.embed,html.embed body{background:transparent}
 html.embed body{display:block}
 .wrap{width:min(100vw,1600px);aspect-ratio:16/10;position:relative;overflow:hidden;border-radius:8px;background:#075c43}
 html.embed .wrap{width:100vw;border-radius:0}
+html.wait .wrap{opacity:0}.wrap{transition:opacity .35s ease}
 .stage{position:absolute;left:0;top:0;width:2400px;height:1500px;transform-origin:0 0;background:url(a-25f8ef1c39.jpg) center/cover no-repeat}
 
 /* phone, built at 390px and scaled to the mockup size */
@@ -81,7 +84,7 @@ html.embed .wrap{width:100vw;border-radius:0}
 </style>
 </head>
 <body>
-<script>if(window.self!==window.top)document.documentElement.classList.add("embed")</script>
+<script>if(window.self!==window.top)document.documentElement.classList.add("embed");(function(){const h=document.documentElement;if(!h.classList.contains("wait"))return;const go=()=>h.classList.remove("wait");const L=["a-25f8ef1c39.jpg","a-588ebf115f.jpg","a-af88045b5e.jpg"].map(u=>{const i=new Image();i.src=u;return i.decode?i.decode().catch(()=>{}):Promise.resolve()});const f=document.fonts?Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,2500))]):Promise.resolve();Promise.all(L.concat(f)).then(go);setTimeout(go,4000)})()</script>
 <div class="wrap"><div class="stage">
  <div class="ph"><div class="frame"><div class="screen">
   <div class="top"><span class="back"><svg viewBox="0 0 8 14" fill="none"><path d="M7 1 1 7l6 6" stroke="#5c3a46" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h1>Money Bestie</h1><img src="a-588ebf115f.jpg" alt=""></div>
