@@ -74,7 +74,7 @@ const W=1280,H=800;
 {const h=document.documentElement,im=document.querySelector('.poster');const a=im.decode?im.decode().catch(()=>{}):Promise.resolve();const f=document.fonts?Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,2500))]):Promise.resolve();const go=()=>h.classList.remove('wait');Promise.all([a,f]).then(go);setTimeout(go,4000)}
 if(window.self!==window.top||/embed/.test(location.search))document.documentElement.classList.add('embed');
 function fit(){const e=document.documentElement.classList.contains('embed'),m=e?0:40;const s=Math.min((innerWidth-m)/W,(innerHeight-m)/H);stage.style.transform=`scale(${s})`;stage.style.setProperty('--er',(20/s)+'px')}
-addEventListener('resize',fit);fit();
+addEventListener('resize',fit);fit();;try{new ResizeObserver(()=>fit()).observe(document.documentElement)}catch(e){}addEventListener('load',fit);addEventListener('pageshow',fit);requestAnimationFrame(fit);setTimeout(fit,400);setTimeout(fit,1500);
 // pick resolution
 const big=(innerWidth*(devicePixelRatio||1))>1500;
 v.src=big?'deck-tl-1920.mp4':'deck-tl-1280.mp4';const pl=v.play();if(pl)pl.catch(()=>{});

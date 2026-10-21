@@ -76,7 +76,7 @@ svg{width:16px;height:16px;flex:none}.bd{padding:16px 24px 0;display:flex;flex-d
 const q=new URLSearchParams(location.search);if(q.get('bg'))document.body.classList.add(q.get('bg'));
 const stage=document.getElementById('stage');
 function fit(){const s=Math.max(innerWidth/1600,innerHeight/1000);const s2=Math.min(s,innerHeight/1000*1.0);stage.style.transform=`translate(${(innerWidth-1600*s2)/2}px,${(innerHeight-1000*s2)/2}px) scale(${s2})`}
-addEventListener('resize',fit);fit();
+addEventListener('resize',fit);fit();;try{new ResizeObserver(()=>fit()).observe(document.documentElement)}catch(e){}addEventListener('load',fit);addEventListener('pageshow',fit);requestAnimationFrame(fit);setTimeout(fit,400);setTimeout(fit,1500);
 let deck=[...document.querySelectorAll('.card')].sort((a,b)=>a.dataset.i-b.dataset.i); // deck[0] = top
 const POS=[[0,0,0,1],[-34,36,-6,.985],[38,48,5,.97],[-14,58,-2.5,.955],[0,64,0,.94]];const SC=1.12;
 const T=d=>{const p=POS[d];return `translate(${p[0]}px,${p[1]}px) rotate(${p[2]}deg) scale(${p[3]*SC})`};

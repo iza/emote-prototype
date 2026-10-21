@@ -100,7 +100,7 @@ const MIC="<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" x
 const BESTIE="a-af88045b5e.jpg";
 const $=id=>document.getElementById(id);
 const wrap=document.querySelector('.wrap'),stage=document.querySelector('.stage'),msgs=$('msgs');
-function fit(){stage.style.transform=`scale(${wrap.clientWidth/2400})`}fit();addEventListener('resize',fit);
+function fit(){stage.style.transform=`scale(${wrap.clientWidth/2400})`}fit();addEventListener('resize',fit);;try{new ResizeObserver(()=>fit()).observe(document.documentElement)}catch(e){}addEventListener('load',fit);addEventListener('pageshow',fit);requestAnimationFrame(fit);setTimeout(fit,400);setTimeout(fit,1500);
 let RUN=0;
 const sleep=ms=>new Promise((res,rej)=>{const r=RUN;setTimeout(()=>r===RUN?res():rej(),ms)});
 function me(html){const r=document.createElement('div');r.className='row me';r.innerHTML=`<div class="b in">${html}</div>`;msgs.appendChild(r)}
