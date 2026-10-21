@@ -182,6 +182,7 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));let run=0;
 const live=()=>run;
 let cur=null;
 function show(id){const n=$(id);if(cur&&cur!==n){cur.classList.remove('on');cur.classList.add('out');const o=cur;setTimeout(()=>o.classList.remove('out'),400)}n.classList.add('on');cur=n;document.querySelector('.top .bk').classList.toggle('off',['s0','s4','s5'].includes(id))}
+show('s0');
 const tap=$('tap');
 function pos(el,dx=0,dy=0){const r=el.getBoundingClientRect(),s=stage.getBoundingClientRect(),k=s.width/380;return [(r.left-s.left)/k+r.width/k/2+dx,(r.top-s.top)/k+r.height/k/2+dy]}
 async function tapOn(el,id){const [x,y]=pos(el);tap.style.left=x+'px';tap.style.top=y+'px';tap.classList.add('show');await wait(750);if(id!==run)return;tap.classList.add('down');el.classList.add('press');await wait(160);tap.classList.remove('down');el.classList.remove('press')}
