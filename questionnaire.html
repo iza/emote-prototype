@@ -77,6 +77,7 @@ h1{margin-top:8px;font-size:22px;line-height:28px;font-weight:600;letter-spacing
 .tap.show{opacity:1;transform:scale(1)}
 .tap.press{animation:press .32s ease}
 @keyframes press{50%{transform:scale(.78)}}
+html.embed .phone{opacity:0;transition:opacity .35s ease}html.embed.ready .phone{opacity:1}
 </style>
 </head>
 <body>
@@ -175,7 +176,9 @@ let busy=false;
 phone.addEventListener('click',async()=>{if(!manual){manual=true;run++;stop()}if(busy)return;busy=true;try{if(step>=steps.length){reset()}else{await steps[step]();step++}}catch(e){}busy=false});
 $('restart').addEventListener('click',()=>{manual=false;stop();run++;reset();play()});
 let started=false;
-const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){if(!manual&&!started){started=true;play()}}else if(!manual){started=false;run++;stop()}},{threshold:.25});
+const ready=Promise.race([Promise.all(["onb-help.webp", "onb-safe.webp"].map(u=>{const i=new Image();i.src=u;return (i.decode?i.decode():Promise.resolve()).catch(()=>{})}).concat(document.fonts?[document.fonts.ready.catch(()=>{})]:[])),new Promise(r=>setTimeout(r,6000))]);
+ready.then(()=>document.documentElement.classList.add('ready'));
+const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){if(!manual&&!started){started=true;ready.then(()=>{if(started&&!manual)play()})}}else if(!manual){started=false;run++;stop()}},{threshold:.25});
 io.observe(phone);
 })();
 </script>
