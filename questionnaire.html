@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WInvest questionnaire</title>
+<link rel="preload" as="image" href="onb-help.webp" fetchpriority="high">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--g:#144235;--chip:#168263;--ink:#031711;--muted:#5b6662;--line:#dfe3e1;--bg:#ffffff}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#faf9f6;font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;gap:12px;-webkit-font-smoothing:antialiased;color:var(--ink)}
+.phone{position:relative;width:390px;height:min(844px,100dvh);overflow:hidden;border-radius:28px;box-shadow:0 20px 60px rgba(23,23,23,.12),0 0 0 1px rgba(23,23,23,.06);background:var(--g);-webkit-tap-highlight-color:transparent;cursor:pointer;user-select:none}
+.restart{font-size:12px;line-height:20px;color:#525252;text-decoration:underline;text-underline-offset:3px;background:none;border:0;cursor:pointer;font-family:inherit}
+@media (max-width:430px),(max-height:700px){body{gap:0}.phone{width:100vw;height:100dvh;border-radius:0;box-shadow:none}.restart{display:none}}
+html.embed,html.embed body{background:transparent}
+html.embed body{min-height:0;height:844px;gap:0;justify-content:flex-start}
+html.embed .phone{height:800px;margin:4px 0 40px;border-radius:32px;box-shadow:0 0 0 1px rgba(23,23,23,.07),0 8px 22px rgba(23,23,23,.09)}
+html.embed .restart{display:none}
+.stage{position:absolute;left:50%;top:50%;width:390px;height:844px;transform:translate(-50%,-50%) scale(var(--s,1));transform-origin:center}
+.layer{position:absolute;inset:0;transition:opacity .32s ease}
+.layer.off{opacity:0}
+.layer.hide{visibility:hidden}
+.img{position:absolute;inset:0;background:center/100% 100% no-repeat}
+
+/* question screens */
+.q{background:var(--bg);display:flex;flex-direction:column;padding:62px 24px 40px}
+.top{display:flex;align-items:center;justify-content:space-between;height:32px}
+.back{width:32px;height:32px;margin-left:-6px;display:grid;place-items:center;border-radius:50%}
+.step{font-size:13px;line-height:16px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.track{margin-top:12px;height:4px;border-radius:2px;background:#e6eae8;overflow:hidden}
+.track b{display:block;height:100%;width:var(--from);border-radius:2px;background:var(--g);transition:width .8s cubic-bezier(.3,.7,.2,1) .2s}
+.layer.in .track b{width:var(--to)}
+.eyebrow{margin-top:36px;font-size:12px;line-height:16px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--chip)}
+h1{margin-top:8px;font-size:22px;line-height:28px;font-weight:600;letter-spacing:-.4px}
+.help{margin-top:6px;font-size:14px;line-height:20px;color:var(--muted);font-variant-numeric:tabular-nums}
+.body{flex:1;margin-top:24px}
+.cta{height:48px;border-radius:24px;background:var(--ink);color:#fff;font-size:15px;font-weight:500;display:grid;place-items:center;transition:background .25s,color .25s}
+.cta.off{background:#e3e7e5;color:#9aa39f}
+/* one button size everywhere: the green intro and outro screens get the same live button */
+.cta.abs{position:absolute;left:24px;right:24px;top:756px}
+.cta.light{background:#fff;color:var(--ink)}
+.cover{position:absolute;left:0;right:0;top:744px;height:72px;background:#144235}
+/* fields */
+.lbl{font-size:15px;line-height:20px;font-weight:600;margin:0 0 8px}
+.field{position:relative;height:56px;border-radius:12px;background:#fff;box-shadow:inset 0 0 0 1px #c9d0cd;padding:9px 14px 0;transition:box-shadow .2s}
+.field.focus{box-shadow:inset 0 0 0 1.5px var(--g)}
+.field small{display:block;font-size:12px;line-height:16px;color:var(--muted)}
+.field span{display:block;font-size:15px;line-height:22px;font-weight:500;min-height:22px}
+.field .ph{color:#9aa39f;font-weight:400;font-style:normal}
+.field .caret{display:inline-block;width:1.5px;height:17px;background:var(--g);vertical-align:-3px;margin-left:1px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.field svg{position:absolute;right:14px;top:24px}
+.gap{height:20px}
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{height:40px;padding:0 16px;border-radius:20px;box-shadow:inset 0 0 0 1px var(--chip);color:var(--chip);font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:background .2s,color .2s}
+.chip svg{width:0;height:14px;opacity:0;transition:width .2s,opacity .2s;margin-left:-6px}
+.chip.on{background:var(--chip);color:#fff}
+.chip.on svg{width:14px;opacity:1;margin-left:0}
+/* priority list */
+.list{background:#fff;border-radius:14px;box-shadow:inset 0 0 0 1px var(--line);overflow:hidden}
+.row{height:48px;display:flex;align-items:center;gap:12px;padding:0 16px;font-size:15px;transition:background .2s,opacity .25s;position:relative}
+.row+.row:before{content:"";position:absolute;left:16px;right:0;top:0;height:1px;background:var(--line)}
+.box{width:20px;height:20px;border-radius:6px;box-shadow:inset 0 0 0 1.5px #a9b2ae;display:grid;place-items:center;transition:background .2s,box-shadow .2s;flex:none}
+.box svg{opacity:0;transform:scale(.5);transition:all .2s cubic-bezier(.3,1.6,.5,1)}
+.row.on{background:#eaf4f0}
+.row.on .box{background:var(--chip);box-shadow:none}
+.row.on .box svg{opacity:1;transform:none}
+.row.dim{opacity:.4}
+.chip{transition:background .2s,color .2s,opacity .25s}.chip.dim{opacity:.35}
+/* finger */
+.tap{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(3,23,17,.26);box-shadow:0 0 0 1px rgba(255,255,255,.4),0 4px 14px rgba(0,0,0,.16);opacity:0;transform:scale(.6);pointer-events:none;z-index:20;transition:left .45s cubic-bezier(.3,.7,.2,1),top .45s cubic-bezier(.3,.7,.2,1),opacity .2s}
+.tap.light{background:rgba(255,255,255,.55);box-shadow:0 0 0 1px rgba(0,0,0,.08),0 4px 14px rgba(0,0,0,.18)}
+.tap.show{opacity:1;transform:scale(1)}
+.tap.press{animation:press .32s ease}
+@keyframes press{50%{transform:scale(.78)}}
+</style>
+</head>
+<body>
+<div class="phone" id="phone" aria-label="WInvest personalisation questionnaire">
+ <div class="stage" id="stage">
+  <div class="layer" id="L1"><div class="img" style="background-image:url(onb-help.webp)"></div><div class="cover"></div><div class="cta abs light">Get started</div></div>
+
+  <div class="layer q off hide" id="L2" style="--from:0%;--to:16.67%">
+   <div class="top"><span class="back"><svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M8.5 1.5 1.5 8.5l7 7" stroke="#031711" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="step">Step 1 of 6</span></div>
+   <div class="track"><b></b></div>
+   <p class="eyebrow">About you</p>
+   <h1>Let’s start with the basics</h1>
+   <div class="body">
+    <p class="lbl">What’s your name?</p>
+    <div class="field" id="fName"><small>Full name</small><span id="vName"><i class="ph">Enter your name</i></span></div>
+    <div class="gap"></div>
+    <p class="lbl">What year were you born?</p>
+    <div class="field" id="fYear" style="width:180px"><small>Year</small><span id="vYear"><i class="ph">Select</i></span><svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="m1 1.5 5 5 5-5" stroke="#5b6662" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+   </div>
+   <div class="cta off" id="c2">Continue</div>
+  </div>
+
+  <div class="layer q off hide" id="L3" style="--from:16.67%;--to:50%">
+   <div class="top"><span class="back"><svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M8.5 1.5 1.5 8.5l7 7" stroke="#031711" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="step">Step 3 of 6</span></div>
+   <div class="track"><b></b></div>
+   <p class="eyebrow">Your lifestyle</p>
+   <h1>Which best describes you?</h1>
+   <p class="help">Select all that apply</p>
+   <div class="body"><div class="chips" id="chips">
+    <span class="chip"><svg viewBox="0 0 14 14" fill="none"><path d="m3 7.3 2.6 2.5L11 4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>I love spending</span>
+    <span class="chip"><svg viewBox="0 0 14 14" fill="none"><path d="m3 7.3 2.6 2.5L11 4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>I’m smart with budgets</span>
+    <span class="chip"><svg viewBox="0 0 14 14" fill="none"><path d="m3 7.3 2.6 2.5L11 4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Social, and I enjoy spending</span>
+    <span class="chip"><svg viewBox="0 0 14 14" fill="none"><path d="m3 7.3 2.6 2.5L11 4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>I love adventures, and I save</span>
+    <span class="chip"><svg viewBox="0 0 14 14" fill="none"><path d="m3 7.3 2.6 2.5L11 4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>I enjoy DIY and saving</span>
+    <span class="chip"><svg viewBox="0 0 14 14" fill="none"><path d="m3 7.3 2.6 2.5L11 4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Focused on career and saving</span>
+   </div></div>
+   <div class="cta off" id="c3">Continue</div>
+  </div>
+
+  <div class="layer q off hide" id="L4" style="--from:50%;--to:83.33%">
+   <div class="top"><span class="back"><svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M8.5 1.5 1.5 8.5l7 7" stroke="#031711" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="step">Step 5 of 6</span></div>
+   <div class="track"><b></b></div>
+   <p class="eyebrow">Your goals</p>
+   <h1>What are your top 3 financial priorities this year?</h1>
+   <p class="help" id="count">0 of 3 selected</p>
+   <div class="body"><div class="chips" id="list"><span class="chip"><svg viewBox="0 0 14 14" fill="none"><path d="m3 7.3 2.6 2.5L11 4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Clear debts</span><span class="chip"><svg viewBox="0 0 14 14" fill="none"><path d="m3 7.3 2.6 2.5L11 4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Save for a home deposit</span><span class="chip"><svg viewBox="0 0 14 14" fill="none"><path d="m3 7.3 2.6 2.5L11 4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Start investing</span><span class="chip"><svg viewBox="0 0 14 14" fill="none"><path d="m3 7.3 2.6 2.5L11 4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Boost my salary</span><span class="chip"><svg viewBox="0 0 14 14" fill="none"><path d="m3 7.3 2.6 2.5L11 4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Plan a major purchase</span><span class="chip"><svg viewBox="0 0 14 14" fill="none"><path d="m3 7.3 2.6 2.5L11 4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Start a side income</span><span class="chip"><svg viewBox="0 0 14 14" fill="none"><path d="m3 7.3 2.6 2.5L11 4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Generate passive income</span><span class="chip"><svg viewBox="0 0 14 14" fill="none"><path d="m3 7.3 2.6 2.5L11 4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Other</span></div></div>
+   <div class="cta off" id="c4">Continue</div>
+  </div>
+
+  <div class="layer off hide" id="L5"><div class="img" style="background-image:url(onb-safe.webp)"></div><div class="cover"></div><div class="cta abs light">Let’s explore the app</div></div>
+  <div class="tap" id="tap"></div>
+ </div>
+</div>
+<button class="restart" id="restart">Restart</button>
+<script>
+(function(){
+const $=id=>document.getElementById(id),phone=$('phone'),stage=$('stage'),tapEl=$('tap');
+if(window.self!==window.top||/embed/.test(location.search))document.documentElement.classList.add('embed');
+let S=1;function fit(){const h=phone.clientHeight,w=phone.clientWidth;if(!h||!w)return;S=Math.max(w/390,Math.min(1,h/844));stage.style.setProperty('--s',S)}
+fit();addEventListener('resize',fit);try{new ResizeObserver(fit).observe(phone)}catch(e){}
+const L={1:$('L1'),2:$('L2'),3:$('L3'),4:$('L4'),5:$('L5')};
+const chips=[...document.querySelectorAll('#chips .chip')],rows=[...document.querySelectorAll('#list .chip')];
+const wait=ms=>new Promise((r,j)=>{const c=()=>{clearTimeout(t);j('stop')};const t=setTimeout(()=>{cur=cur.filter(f=>f!==c);r()},ms);cur.push(c)});
+let cur=[],run=0,manual=false,step=0;
+/* stage coordinates of an element's centre */
+function at(el){const s=stage.getBoundingClientRect(),r=el.getBoundingClientRect();return [(r.left+r.width/2-s.left)/S,(r.top+r.height/2-s.top)/S]}
+async function tapXY(x,y,light){tapEl.classList.toggle('light',!!light);tapEl.style.left=x+'px';tapEl.style.top=y+'px';tapEl.classList.add('show');await wait(480);tapEl.classList.remove('press');void tapEl.offsetWidth;tapEl.classList.add('press');await wait(300)}
+const tap=(el,light)=>{const [x,y]=at(el);return tapXY(x,y,light)};
+function hideTap(){tapEl.classList.remove('show')}
+function show(i){const el=L[i];el.classList.remove('hide','in');void el.offsetWidth;el.classList.remove('off');setTimeout(()=>el.classList.add('in'),30)}
+function leave(i){const el=L[i];setTimeout(()=>{el.classList.add('off','hide');el.classList.remove('in')},380)}
+async function type(el,text){el.textContent='';const c=document.createElement('i');c.className='caret';el.appendChild(c);for(const ch of text){c.insertAdjacentText('beforebegin',ch);await wait(70)}await wait(250);c.remove()}
+function count(){const n=rows.filter(r=>r.classList.contains('on')).length;$('count').textContent=n+' of 3 selected';rows.forEach(r=>r.classList.toggle('dim',n>=3&&!r.classList.contains('on')));$('c4').classList.toggle('off',n<3)}
+function reset(){L[1].className='layer';[2,3,4].forEach(i=>L[i].className='layer q off hide');L[5].className='layer off hide';
+ $('vName').innerHTML='<i class="ph">Enter your name</i>';$('vYear').innerHTML='<i class="ph">Select</i>';['fName','fYear'].forEach(id=>$(id).classList.remove('focus'));
+ chips.forEach(c=>c.classList.remove('on'));rows.forEach(r=>r.classList.remove('on','dim'));$('count').textContent='0 of 3 selected';['c2','c3','c4'].forEach(id=>$(id).classList.add('off'));hideTap();step=0}
+/* each step moves the prototype one beat forward; the same steps play on their own or one per tap */
+const steps=[
+ async()=>{await tapXY(195,780,true);hideTap();leave(1);show(2)},
+ async()=>{await tap($('fName'));hideTap();$('fName').classList.add('focus');await type($('vName'),'Mary Jones');$('fName').classList.remove('focus')},
+ async()=>{await tap($('fYear'));hideTap();$('fYear').classList.add('focus');await wait(250);$('vYear').textContent='1990';await wait(200);$('fYear').classList.remove('focus');$('c2').classList.remove('off')},
+ async()=>{await tap($('c2'));hideTap();leave(2);show(3)},
+ async()=>{await tap(chips[0]);chips[0].classList.add('on');$('c3').classList.remove('off');await wait(150);hideTap()},
+ async()=>{await tap(chips[4]);chips[4].classList.add('on');await wait(150);hideTap()},
+ async()=>{await tap($('c3'));hideTap();leave(3);show(4)},
+ async()=>{await tap(rows[1]);rows[1].classList.add('on');count();await wait(120);hideTap()},
+ async()=>{await tap(rows[2]);rows[2].classList.add('on');count();await wait(120);hideTap()},
+ async()=>{await tap(rows[6]);rows[6].classList.add('on');count();await wait(120);hideTap()},
+ async()=>{await tap($('c4'));hideTap();leave(4);show(5)},
+];
+const holds=[1700,1300,300,600,1000,500,800,900,350,350,800,2800];
+function stop(){cur.forEach(f=>f());cur=[]}
+async function play(){const me=++run;try{while(me===run){await wait(holds[step]);if(me!==run)return;if(step>=steps.length){await restartLoop();continue}await steps[step]();step++}}catch(e){}}
+async function restartLoop(){L[1].className='layer off';L[1].style.zIndex=9;void L[1].offsetWidth;L[1].classList.remove('off');await wait(400);L[1].style.zIndex='';reset()}
+let busy=false;
+phone.addEventListener('click',async()=>{if(!manual){manual=true;run++;stop()}if(busy)return;busy=true;try{if(step>=steps.length){reset()}else{await steps[step]();step++}}catch(e){}busy=false});
+$('restart').addEventListener('click',()=>{manual=false;stop();run++;reset();play()});
+let started=false;
+const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){if(!manual&&!started){started=true;play()}}else if(!manual){started=false;run++;stop()}},{threshold:.25});
+io.observe(phone);
+})();
+</script>
+</body>
+</html>

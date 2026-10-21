@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WInvest welcome</title>
+<link rel="preload" as="image" href="onb-w1.webp" fetchpriority="high"><link rel="preload" as="image" href="onb-chrome.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#faf9f6;font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;gap:12px;-webkit-font-smoothing:antialiased}
+.phone{position:relative;width:390px;height:min(844px,100dvh);overflow:hidden;border-radius:28px;box-shadow:0 20px 60px rgba(23,23,23,.12),0 0 0 1px rgba(23,23,23,.06);background:#144235;-webkit-tap-highlight-color:transparent;cursor:pointer;user-select:none}
+.restart{font-size:12px;line-height:20px;color:#525252;text-decoration:underline;text-underline-offset:3px;background:none;border:0;cursor:pointer;font-family:inherit}
+@media (max-width:430px),(max-height:700px){body{gap:0}.phone{width:100vw;height:100dvh;border-radius:0;box-shadow:none}.restart{display:none}}
+html.embed,html.embed body{background:transparent}
+html.embed body{min-height:0;height:844px;gap:0;justify-content:flex-start}
+html.embed .phone{height:800px;margin:4px 0 40px;border-radius:32px;box-shadow:0 0 0 1px rgba(23,23,23,.07),0 8px 22px rgba(23,23,23,.09)}
+html.embed .restart{display:none}
+/* 390x844 stage, centred vertically so a shorter phone trims top and bottom evenly */
+.stage{position:absolute;left:50%;top:50%;width:390px;height:844px;transform:translate(-50%,-50%) scale(var(--s,1));transform-origin:center}
+.scr{position:absolute;inset:0;background:center/100% 100% no-repeat;will-change:transform,opacity}
+.track{position:absolute;inset:0;display:flex;width:1560px;transition:transform .55s cubic-bezier(.3,.7,.2,1)}
+.track .scr{position:relative;flex:none;width:390px;height:844px}
+.layer{position:absolute;inset:0;transition:opacity .32s ease}
+.layer.right,.layer.left,.layer.fade{opacity:0}
+.layer.hide{visibility:hidden}
+.st{position:absolute;inset:0;background:center/100% 100% no-repeat;opacity:0;transition:opacity .16s ease}
+.st.on{opacity:1}
+/* checkbox ticks on the priorities question */
+.tick{position:absolute;left:40px;width:16px;height:16px;border-radius:4px;background:#144235;transform:scale(.4);opacity:0;transition:transform .22s cubic-bezier(.3,1.6,.5,1),opacity .12s}
+.tick svg{position:absolute;inset:0}
+.tick.on{transform:none;opacity:1}
+/* welcome: logo, page dots and button stay put; only the content swipes */
+.chrome{position:absolute;left:0;width:390px;background:url(onb-chrome.webp) no-repeat;background-size:390px 254px;z-index:2}
+.chrome.top{top:0;height:120px;background-position:0 0}
+.chrome.bot{top:710px;height:134px;background:#144235}
+.cta{position:absolute;left:24px;right:24px;top:756px;height:48px;border-radius:24px;background:#fff;color:#031711;font:500 15px/48px Inter,system-ui,sans-serif;text-align:center;z-index:3}
+.dots{position:absolute;left:0;right:0;top:727px;display:flex;justify-content:center;gap:8px;z-index:3}
+.dots i{display:block;width:6px;height:6px;border-radius:3px;background:#03170f;transition:width .35s cubic-bezier(.3,.7,.2,1)}
+.dots i.on{width:32px}
+/* finger */
+.tap{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(255,255,255,.55);box-shadow:0 0 0 1px rgba(0,0,0,.08),0 4px 14px rgba(0,0,0,.18);opacity:0;transform:scale(.6);pointer-events:none;z-index:20;transition:left .45s cubic-bezier(.3,.7,.2,1),top .45s cubic-bezier(.3,.7,.2,1),opacity .2s}
+.tap.dark{background:rgba(3,23,17,.28);box-shadow:0 0 0 1px rgba(255,255,255,.35),0 4px 14px rgba(0,0,0,.18)}
+.tap.show{opacity:1;transform:scale(1)}
+.tap.press{animation:press .32s ease}
+@keyframes press{50%{transform:scale(.78)}}
+</style>
+</head>
+<body>
+<div class="phone" id="phone" aria-label="WInvest welcome screens: four swipeable intro screens">
+ <div class="stage" id="stage">
+  <div class="layer" id="L0"><div class="scr" style="background:#144235"></div><div class="track" id="track">
+   <div class="scr" style="background-image:url(onb-w1.webp)"></div>
+   <div class="scr" style="background-image:url(onb-w2.webp)"></div>
+   <div class="scr" style="background-image:url(onb-w3.webp)"></div>
+   <div class="scr" style="background-image:url(onb-w4.webp)"></div>
+  </div>
+   <div class="chrome top"></div><div class="chrome bot"></div><div class="cta">Get started</div>
+   <div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
+  </div>
+  <div class="tap" id="tap"></div>
+ </div>
+</div>
+<button class="restart" id="restart">Restart</button>
+<script>
+(function(){
+const $=id=>document.getElementById(id),phone=$('phone'),stage=$('stage'),tapEl=$('tap'),track=$('track');
+if(window.self!==window.top||/embed/.test(location.search))document.documentElement.classList.add('embed');
+function fit(){const h=phone.clientHeight,w=phone.clientWidth;if(!h||!w)return;stage.style.setProperty('--s',Math.max(w/390,Math.min(1,h/844)))}
+fit();addEventListener('resize',fit);try{new ResizeObserver(fit).observe(phone)}catch(e){}
+const wait=ms=>new Promise((r,j)=>{const c=()=>{clearTimeout(t);j('stop')};const t=setTimeout(()=>{cur=cur.filter(f=>f!==c);r()},ms);cur.push(c)});
+let cur=[],run=0,manual=false,step=0;
+const D=[...document.querySelectorAll('#dots i')];function dot(n){D.forEach((e,k)=>e.classList.toggle('on',k===n))}dot(0);
+function hideTap(){tapEl.classList.remove('show')}
+async function swipe(){tapEl.style.transition='none';tapEl.style.left='300px';tapEl.style.top='470px';void tapEl.offsetWidth;tapEl.style.transition='';tapEl.classList.add('show');await wait(260);tapEl.style.left='110px';await wait(120)}
+function go(n){track.style.transform='translateX('+(-390*n)+'px)';dot(n)}
+function reset(){go(0);hideTap();step=0}
+const steps=[async()=>{await swipe();go(1);hideTap()},async()=>{await swipe();go(2);hideTap()},async()=>{await swipe();go(3);hideTap()}];
+const holds=[2200,2200,2200,2600];
+function stop(){cur.forEach(f=>f());cur=[]}
+async function play(){const me=++run;try{while(me===run){await wait(holds[step]);if(me!==run)return;if(step>=steps.length){reset();continue}await steps[step]();step++}}catch(e){}}
+let busy=false;
+phone.addEventListener('click',async()=>{if(!manual){manual=true;run++;stop()}if(busy)return;busy=true;try{if(step>=steps.length){reset()}else{await steps[step]();step++}}catch(e){}busy=false});
+$('restart').addEventListener('click',()=>{manual=false;stop();run++;reset();play()});
+let started=false;
+const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){if(!manual&&!started){started=true;play()}}else if(!manual){started=false;run++;stop()}},{threshold:.25});
+io.observe(phone);
+})();
+</script>
+</body>
+</html>
